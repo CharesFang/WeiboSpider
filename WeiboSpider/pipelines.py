@@ -15,7 +15,7 @@ from pymongo.errors import DuplicateKeyError
 class WeibospiderPipeline(object):
 
     def __init__(self):
-        # to check the uid from TotalNumItem, means just need to save one item and drop others
+        # to check the __uid from TotalNumItem, means just need to save one item and drop others
         db_connector = DBConnector()
         self.__hash_uid_list = []
         self.db, self.client = db_connector.create_mongo_connection()

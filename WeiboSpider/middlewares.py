@@ -35,28 +35,28 @@ class RandomUaAndProxyIpMiddleware(UserAgentMiddleware):
 
     @staticmethod
     def get_proxy_ip(ip_num):
-        rad_index = random.randint(1, ip_num)
-        file_path_dir = os.path.join(os.path.dirname(os.getcwd() + os.path.sep + '..'), 'proxy_utils\\proxy\\')
-        # print(file_path_dir)
-        file_path = os.path.join(file_path_dir, f"{str(rad_index)}.temp")
-        # print(file_path)
-        with open(file_path, 'r') as file:
-            for line in file:
-                proxy_ip = line.split(':')
-        proxy = f'https://{proxy_ip[0]}:{proxy_ip[1]}'
-        return proxy
+        # rewrite your own method for getting proxy ip address
+
+        # rad_index = random.randint(1, ip_num)
+        # file_path_dir = os.path.join(os.path.dirname(os.getcwd() + os.path.sep + '..'), 'proxy_utils\\proxy\\')
+        # file_path = os.path.join(file_path_dir, f"{str(rad_index)}.temp")
+        # with open(file_path, 'r') as file:
+        #     for line in file:
+        #         proxy_ip = line.split(':')
+        # proxy = f'https://{proxy_ip[0]}:{proxy_ip[1]}'
+        # return proxy
+        return None
 
     def process_request(self, request, spider):
+        # proxy = RandomUaAndProxyIpMiddleware.get_proxy_ip(self.ip_num)
+        # request.meta['proxy'] = proxy
         request.headers['User-agent'] = self.ua.random
-        proxy = RandomUaAndProxyIpMiddleware.get_proxy_ip(self.ip_num)
-        request.meta['proxy'] = proxy
 
 
 # to solve crawling failed
 class RetryMiddleware(object):
 
     def __init__(self, ip_num, retry_time=3):
-        # self.logger = logger
         self.retry_time = retry_time
         self.ua = UserAgent()
         self.__err_count = {}  # request error times
@@ -81,8 +81,9 @@ class RetryMiddleware(object):
             # to resend this request and change the ua and proxy ip
             if self.__err_count[url_hash] < self.retry_time:
                 request.headers['User-agent'] = self.ua.random
-                proxy = RandomUaAndProxyIpMiddleware.get_proxy_ip(self.ip_num)
-                request.meta['proxy'] = proxy
+                # add proxy for the new request
+                # proxy = RandomUaAndProxyIpMiddleware.get_proxy_ip(self.ip_num)
+                # request.meta['proxy'] = proxy
                 logging.log(msg=time.strftime("%Y-%m-%d %H:%M:%S [RetryMiddleware] ")
                             + spider.name + ": restart crawl url:" + response.url, level=logging.INFO)
                 return request
@@ -113,6 +114,3 @@ class RetryMiddleware(object):
                                 + spider.name + ": drop request by json decoding error, url:"
                                 + response.url, level=logging.INFO)
                     raise IgnoreRequest
-
-
-
