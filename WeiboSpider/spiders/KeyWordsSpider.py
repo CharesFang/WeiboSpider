@@ -19,7 +19,7 @@ class KeyWordsSpider(WeiboSpider):
     allowed_domains = ['m.weibo.cn', 'weibo.com']  # crawling sites
     handle_httpstatus_list = [418]  # http status code for not ignoring
 
-    def __init__(self, keywords, page_num, *args, **kwargs):
+    def __init__(self, keywords, page_num=5, *args, **kwargs):
         super(KeyWordsSpider, self).__init__(uid=None, *args, **kwargs)
         self.api = {
             'api_0': 'https://m.weibo.cn/api/container/getIndex?containerid=100103type',

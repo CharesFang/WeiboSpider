@@ -17,7 +17,7 @@ class WeiboSpider(scrapy.Spider):
     allowed_domains = ['m.weibo.cn', 'weibo.com']  # crawling sites
     handle_httpstatus_list = [418]  # http status code for not ignoring
 
-    def __init__(self, uid, *args, **kwargs):
+    def __init__(self, uid, page=3, *args, **kwargs):
         super(WeiboSpider, self).__init__(*args, **kwargs)
         self.start_urls = ['https://m.weibo.cn/']
         self.__uid = uid
@@ -26,7 +26,7 @@ class WeiboSpider(scrapy.Spider):
                                  'api_1': '&containerid=107603', 'api_2': '&page=',
                                  'longtext_api': 'https://m.weibo.cn/statuses/extend?id=',
                                  'precise_time_api': 'https://m.weibo.cn/status/'}
-        self.__weibo_page_range = 3
+        self.__weibo_page_range = int(page)
 
     def start_requests(self):
         # start of the crawler

@@ -95,8 +95,3 @@ ITEM_PIPELINES = {
 #HTTPCACHE_DIR = 'httpcache'
 #HTTPCACHE_IGNORE_HTTP_CODES = []
 #HTTPCACHE_STORAGE = 'scrapy.extensions.httpcache.FilesystemCacheStorage'
-
-# API for getting proxy ip
-PROXY_API = 'http://piping.mogumiao.com/proxy/api/get_ip_al?appKey=f7adf3c9ed75432fb52ab47fbad8e6df&count=5&expiryDate=0&format=1&newLine=2'
-# Seconds for get proxy ip interval
-PROXY_INTERVAL_TIME = 60
