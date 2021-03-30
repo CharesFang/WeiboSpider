@@ -46,7 +46,7 @@ class FansListSpider(scrapy.Spider):
     def parse_fans(self, response):
         cards = json.loads(response.text)['data']['cards']
         fans_item = FansListItem()
-        fans_item['__uid'] = response.meta['__uid']
+        fans_item['uid'] = response.meta['__uid']
         fans_list = []
         for crd in cards:
             if crd['card_type'] == 11:
@@ -59,7 +59,7 @@ class FansListSpider(scrapy.Spider):
     def parse_follows(self, response):
         cards = json.loads(response.text)['data']['cards']
         follows_item = FollowsListItem()
-        follows_item['__uid'] = response.meta['__uid']
+        follows_item['uid'] = response.meta['__uid']
         follows_list = []
         for crd in cards:
             if crd['card_type'] == 11:
