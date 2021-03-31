@@ -1,4 +1,4 @@
-lxml==4.6.2
+lxml>=4.6.3
 fake_useragent==0.1.11
 Scrapy==1.6.0
 pymongo==3.10.1
