@@ -60,7 +60,7 @@ DOWNLOADER_MIDDLEWARES = {
     'scrapy.contrib.downloadermiddleware.httpproxy.HttpProxyMiddleware': None,
     # 'WeiboSpider.middlewares.RandomUaAndProxyIpMiddleware': 400,
     'WeiboSpider.middlewares.RandomUaAndProxyIpMiddleware': None,
-    'WeiboSpider.middlewares.RetryMiddleware': 544,
+    'WeiboSpider.middlewares.RetryMiddleware': None,
 }
 
 # Enable or disable extensions

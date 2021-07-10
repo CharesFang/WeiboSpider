@@ -5,14 +5,11 @@
 # See documentation in:
 # https://doc.scrapy.org/en/latest/topics/spider-middleware.html
 
-import os
 import re
 import time
 import json
-import random
 import logging
-from fake_useragent import UserAgent
-from scrapy import signals
+# from fake_useragent import UserAgent
 from scrapy.exceptions import IgnoreRequest
 from scrapy.downloadermiddlewares.useragent import UserAgentMiddleware
 
