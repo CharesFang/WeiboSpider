@@ -23,55 +23,53 @@ readonly log_file_path="$log_path/$log_name"
 # to initial mongo db dir
 function init_dir() {
   if [ ! -d "$root_dir" ]; then
-    mkdir "$root_dir"
-    mkdir "$data_path"
-    mkdir "$config_path"
-    mkdir "$log_path"
+    mkdir "$root_dir" && mkdir "$data_path" && mkdir "$config_path" && mkdir "$log_path"
 fi
 }
 
 
 function init_config_file() {
+
+  umask 0111
+
 # create config file
   touch "$config_file_path"
 
 # create log file
-#  touch "$log_file_path"
+  touch "$log_file_path"
 
 
 # write configures
 
   cat <<- EOF > "$config_file_path"
-#    processManagement:
-#       fork: true
-#    net:
-#       bindIp: localhost
-#       port: 27017
-#    storage:
-#       dbPath: /data/db
-#    systemLog:
-#       destination: file
-#       path: "/data/log"
-#       logAppend: true
-#    storage:
-#       journal:
-#          enabled: true
+processManagement:
+   fork: false
+net:
+   bindIp: 0.0.0.0
+   port: 27017
+storage:
+   dbPath: /data/db
+systemLog:
+   destination: file
+   path: /var/log/mongo/mongod.log
+   logAppend: true
+storage:
+   journal:
+      enabled: true
+security:
+      authorization: enabled
 EOF
-}
-
-function clean() {
-    rm -r "$root_dir"
 }
 
 
 function create_container() {
   sudo docker pull mongo:4.2
-  sudo docker run --name weibo --privileged  --restart=always \
+  sudo docker run --name weibo --privileged --restart=always  \
   -p 27017:27017 \
   -v $data_path:/data/db \
-  -v $log_path:/data/log \
+  -v $log_path:/var/log/mongo \
   -v $config_path:/etc/mongo \
-  -d mongo:4.2 -f /etc/mongod.conf --auth
+  -d mongo:4.2 -f /etc/mongo/mongod.conf
 }
 
 # entry point of program
