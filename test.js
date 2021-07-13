@@ -18,16 +18,17 @@ db.createUser(
         ]
     }
 );
+print();
 
 // auth as admin
 print("Enter passwd to auth as admin.");
 db.auth("admin", passwordPrompt());
-
+print();
 
 // change database to weibo
 db = db.getSiblingDB('weibo');
 
-// create another user
+// create user for weibo database
 print("Enter passwd to for weibo database user.");
 db.createUser(
     {
@@ -38,22 +39,12 @@ db.createUser(
         ]
     }
 );
+print();
 
-// close this connection
+// create target collection
+db.createCollection('user');
+db.createCollection('tweet');
+print("Successfully create collections.");
+
 conn.close();
-
-// create another connection and create collections
-conn = new Mongo("localhost:27017");
-db = conn.getDB('weibo');
-
-// auth as weibo user
-print(`Enter user weibo passwd.`);
-var auth_res=db.auth("weibo", passwordPrompt());
-if (!auth_res){
-    print("auth failed.")
-}else{
-    print("auth as weibo");
-    db.createCollection('user');
-    db.createCollection('tweet');
-}
-conn.close();
+print("Mongodb initial finished.")
