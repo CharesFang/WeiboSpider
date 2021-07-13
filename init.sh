@@ -63,7 +63,7 @@ EOF
 
 
 function create_container() {
-  sudo docker pull mongo:4.2
+#  sudo docker pull mongo:4.2
   sudo docker run --name weibo --privileged --restart=always  \
   -p 27017:27017 \
   -v $data_path:/data/db \
@@ -85,5 +85,7 @@ function main() {
     create_container
 }
 
+
 main
 
+cp test.js ~/mongo/config/test.js
