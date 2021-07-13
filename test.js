@@ -4,7 +4,6 @@ conn = new Mongo("localhost:27017");
 db = conn.getDB('admin');
 
 // to initial administrator
-// db = db.getSiblingDB('admin');
 print(`Create datatabse: ${db}, and then enter administator passwd.`);
 
 // create administrator
@@ -18,28 +17,39 @@ db.createUser(
     }
 );
 
+// auth as admin
 print("Enter passwd to auth as admin.");
 db.auth("admin", passwordPrompt());
 
+// create another user
 print("Enter passwd to for weibo database user.");
+
+db = db.getSiblingDB('weibo');
+print(`${db}`);
+
 db.createUser(
     {
         user: "test",
         pwd: passwordPrompt(),
         roles: [
-            { role: "userAdmin", db: "weibo" }
+            { role: "readWrite", db: "weibo" }
         ]
     }
 );
 
+conn.close();
+
+
+conn = new Mongo("localhost:27017");
+db = conn.getDB('weibo');
+
+// auth as weibo user
 print(`Enter user weibo passwd.`);
 var auth_res=db.auth("test", passwordPrompt());
 if (!auth_res){
     print("auth failed.")
 }else{
     print("auth as weibo");
-    db = db.getSiblingDB('weibo');
-    print(`${db}`);
     // db.createCollection('user');
     // db.createCollection('tweet');
     db.user.insertOne({test:123});
