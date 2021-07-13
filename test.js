@@ -1,6 +1,8 @@
-// create connection to initial mongodb container
+/*
+    create connection to initial mongodb container
+*/
+
 conn = new Mongo("localhost:27017");
-// db = conn.getDB("weibo");
 db = conn.getDB('admin');
 
 // to initial administrator
@@ -21,15 +23,15 @@ db.createUser(
 print("Enter passwd to auth as admin.");
 db.auth("admin", passwordPrompt());
 
+
+// change database to weibo
+db = db.getSiblingDB('weibo');
+
 // create another user
 print("Enter passwd to for weibo database user.");
-
-db = db.getSiblingDB('weibo');
-print(`${db}`);
-
 db.createUser(
     {
-        user: "test",
+        user: "weibo",
         pwd: passwordPrompt(),
         roles: [
             { role: "readWrite", db: "weibo" }
@@ -37,58 +39,21 @@ db.createUser(
     }
 );
 
+// close this connection
 conn.close();
 
-
+// create another connection and create collections
 conn = new Mongo("localhost:27017");
 db = conn.getDB('weibo');
 
 // auth as weibo user
 print(`Enter user weibo passwd.`);
-var auth_res=db.auth("test", passwordPrompt());
+var auth_res=db.auth("weibo", passwordPrompt());
 if (!auth_res){
     print("auth failed.")
 }else{
     print("auth as weibo");
-    // db.createCollection('user');
-    // db.createCollection('tweet');
-    db.user.insertOne({test:123});
-    printjson(db.adminCommand('listDatabases'));
-    printjson(db.getCollectionNames());
+    db.createCollection('user');
+    db.createCollection('tweet');
 }
 conn.close();
-
-// conn = new Mongo("localhost:27017");
-// db = conn.getDB('weibo');
-
-
-
-// conn.close();
-// // auth as admin
-// print("Enter passwd to auth as admin.");
-// db.auth("admin", passwordPrompt());
-// print();
-//
-// // create weibo user
-// print(`Enter user weibo passwd.`);
-// db.createUser(
-//     {
-//         user: "weibo",
-//         pwd: passwordPrompt(),
-//         roles: [
-//             { role: "userAdmin", db: "weibo" }
-//         ]
-//     }
-// );
-//
-// // set target database
-// print("auth as weibo");
-// var auth_res=db.auth("weibo", passwordPrompt());
-// if (auth_res){
-//     db = db.getSiblingDB('weibo');
-//     print(`${db}`);
-//     db.createCollection('user');
-//     db.createCollection('tweet');
-// }
-//
-// print("Database init finished.");
