@@ -2,7 +2,9 @@
     create connection to initial mongodb container
 */
 
-conn = new Mongo("localhost:27017");
+// create mongo connection
+conn = new Mongo("127.0.0.1:27017");
+// use database
 db = conn.getDB('admin');
 
 // to initial administrator

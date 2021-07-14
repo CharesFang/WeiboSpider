@@ -97,11 +97,12 @@ function main() {
   create_container
   echo "MongoDB container created."
 
-  cat <<-EOF
+  cat <<- EOF
 Run CMD:
   "sudo docker exec -it weibo mongo 127.0.0.1:27017 /etc/resource/db_init.js"
 to initial Database.
 EOF
+
 }
 
 main
