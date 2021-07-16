@@ -5,6 +5,7 @@
 
 from _spider.user_info_spider import UserInfoSpider
 from _spider.tweet_info_spider import TweetInfoSpider
+from WeiboSpider.items import UserInfoItem
 
 
 class WeiboSpider(UserInfoSpider, TweetInfoSpider):

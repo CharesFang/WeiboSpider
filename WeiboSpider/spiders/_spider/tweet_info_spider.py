@@ -7,6 +7,9 @@ from scrapy import Spider
 
 
 class TweetInfoSpider(Spider):
+    name = "tweet_spider"
+    allowed_domains = ['m.weibo.cn', 'weibo.com']
+
     def __init__(self):
         super(TweetInfoSpider, self).__init__()
 

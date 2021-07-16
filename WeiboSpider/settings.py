@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-import os
 # Scrapy settings for WeiboSpider project
 #
 # For simplicity, this file contains only settings considered important or
