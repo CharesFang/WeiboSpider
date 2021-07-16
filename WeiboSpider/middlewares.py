@@ -9,7 +9,7 @@ import re
 import time
 import json
 import logging
-# from fake_useragent import UserAgent
+from fake_useragent import UserAgent
 from scrapy.exceptions import IgnoreRequest
 from scrapy.downloadermiddlewares.useragent import UserAgentMiddleware
 
@@ -32,16 +32,6 @@ class RandomUaAndProxyIpMiddleware(UserAgentMiddleware):
 
     @staticmethod
     def get_proxy_ip(ip_num):
-        # rewrite your own method for getting proxy ip address
-
-        # rad_index = random.randint(1, ip_num)
-        # file_path_dir = os.path.join(os.path.dirname(os.getcwd() + os.path.sep + '..'), 'proxy_utils\\proxy\\')
-        # file_path = os.path.join(file_path_dir, f"{str(rad_index)}.temp")
-        # with open(file_path, 'r') as file:
-        #     for line in file:
-        #         proxy_ip = line.split(':')
-        # proxy = f'https://{proxy_ip[0]}:{proxy_ip[1]}'
-        # return proxy
         return None
 
     def process_request(self, request, spider):
