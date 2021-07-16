@@ -15,6 +15,7 @@ class UserInfoSpider(Spider):
         self.__generator = UserInfoConfig()
 
     def start_requests(self):
+        # how to get target uid? This is a question.
         pass
 
     def parse_profile(self, response, **kwargs):
