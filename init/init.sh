@@ -63,7 +63,7 @@ security:
 EOF
 
 #  create mongo database init json file
-  cp "$(pwd)/resource/$db_file_name" "$resource_path"
+  cp "$(pwd)/init/resource/$db_file_name" "$resource_path"
   sudo chmod 755 "$resource_path/$db_file_name"
 }
 
