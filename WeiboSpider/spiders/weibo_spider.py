@@ -9,8 +9,13 @@ from WeiboSpider.items import UserInfoItem
 
 
 class WeiboSpider(UserInfoSpider, TweetInfoSpider):
-    def __init__(self):
-        super(WeiboSpider, self).__init__()
+    name = "weibo_spider"
+
+    def __init__(self, *args, **kwargs):
+        super(WeiboSpider, self).__init__(*args, **kwargs)
 
     def start_requests(self):
+        pass
+
+    def parse(self, response, **kwargs):
         pass

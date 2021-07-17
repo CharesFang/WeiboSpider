@@ -10,13 +10,19 @@ from ..config.UserInfoConfig import UserInfoConfig
 
 
 class UserInfoSpider(Spider):
-    def __init__(self):
-        super(UserInfoSpider, self).__init__()
+    name = "user_info_spider"
+    allowed_domains = ['m.weibo.cn', "weibo.com", "weibo.cn"]
+
+    def __init__(self, uid: str, *args, **kwargs):
+        super(UserInfoSpider, self).__init__(*args, **kwargs)
         self.__generator = UserInfoConfig()
 
     def start_requests(self):
-        # how to get target uid? This is a question.
+        # how to get target uid? This is a question. Sleep!
         pass
 
-    def parse_profile(self, response, **kwargs):
+    def parse(self, response, **kwargs):
+        pass
+
+    def _parse_profile(self, response):
         pass

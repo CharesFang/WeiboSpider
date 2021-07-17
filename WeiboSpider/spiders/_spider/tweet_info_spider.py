@@ -16,5 +16,8 @@ class TweetInfoSpider(Spider):
     def start_requests(self):
         pass
 
-    def parse_tweet(self, response, **kwargs):
+    def parse(self, response, **kwargs):
+        pass
+
+    def _parse_tweet(self, response, **kwargs):
         pass
