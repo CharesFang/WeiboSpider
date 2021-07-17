@@ -14,5 +14,8 @@ class UserInfoConfig(Config):
             'api_1': '&containerid=100505'
         }
 
+    def __call__(self, uid):
+        return self.gen_url(uid)
+
     def gen_url(self, uid: str):
         return self.__url + self.__api['api_0'] + uid + self.__api['api_1'] + uid
