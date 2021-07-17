@@ -4,7 +4,7 @@
 # @Function:
 
 import json
-from scrapy import Spider
+from scrapy import Spider, Request
 from WeiboSpider.items import UserInfoItem
 from ..config.UserInfoConfig import UserInfoConfig
 
@@ -24,12 +24,16 @@ class UserInfoSpider(Spider):
         self.uid_list = uid.split('|')
 
     def start_requests(self):
-        # how to get target uid? This is a question. Sleep!
+        """ Generate Request objs by target uid and target url generator """
         for uid in self.uid_list:
-            url = self.__generator.gen_url(uid)
+            url = self.__generator(uid)
+            yield Request(url=url)
 
     def parse(self, response, **kwargs):
-        pass
+        yield self._parse_profile(response)
 
     def _parse_profile(self, response):
-        pass
+        item = UserInfoItem()
+        user_info = json.loads(response.text)['data']['userInfo']
+        item['user_info'] = user_info
+        return item
