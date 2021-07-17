@@ -8,7 +8,7 @@ import json
 import scrapy
 import logging
 from lxml import etree
-from ..items import *
+from WeiboSpider.items import *
 
 
 class WeiboSpider(scrapy.Spider):

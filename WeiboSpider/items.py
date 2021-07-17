@@ -13,34 +13,34 @@ class UserInfoItem(Item):
     user_info = Field()
 
 
-# class TotalNumItem(scrapy.Item):
-#     # Item for user's post num
-#     uid = scrapy.Field()
-#     total_num = scrapy.Field()
-#
-#
-# class UserPostItem(scrapy.Item):
-#     # Item for user's post content
-#     user_post = scrapy.Field()
-#
-#
-# class HotSearchItem(scrapy.Item):
-#     # Item for real time hot search information
-#     hot_search = scrapy.Field()
-#     time_stamp = scrapy.Field()
-#
-#
-# class FansListItem(scrapy.Item):
-#     uid = scrapy.Field()
-#     fans_list = scrapy.Field()
-#
-#
-# class FollowsListItem(scrapy.Item):
-#     uid = scrapy.Field()
-#     follows_list = scrapy.Field()
-#
-#
-# class KeyWordsItem(scrapy.Item):
-#     key_words = scrapy.Field()
-#     is_crawled = scrapy.Field()
-#     post = scrapy.Field()
+class TotalNumItem(Item):
+    # Item for user's post num
+    uid = Field()
+    total_num = Field()
+
+
+class UserPostItem(Item):
+    # Item for user's post content
+    user_post = Field()
+
+
+class HotSearchItem(Item):
+    # Item for real time hot search information
+    hot_search = Field()
+    time_stamp = Field()
+
+
+class FansListItem(Item):
+    uid = Field()
+    fans_list = Field()
+
+
+class FollowsListItem(Item):
+    uid = Field()
+    follows_list = Field()
+
+
+class KeyWordsItem(Item):
+    key_words = Field()
+    is_crawled = Field()
+    post = Field()

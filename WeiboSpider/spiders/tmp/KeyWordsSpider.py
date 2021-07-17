@@ -10,7 +10,7 @@ from time import time
 from math import floor
 from urllib.parse import quote
 from .WeiboSpider import WeiboSpider
-from ..items import KeyWordsItem
+from WeiboSpider.items import KeyWordsItem
 
 
 class KeyWordsSpider(WeiboSpider):

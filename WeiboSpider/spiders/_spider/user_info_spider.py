@@ -19,7 +19,8 @@ class UserInfoSpider(Spider):
 
     def start_requests(self):
         # how to get target uid? This is a question. Sleep!
-        pass
+        for _ in self.uid.split('|'):
+            print(_)
 
     def parse(self, response, **kwargs):
         pass

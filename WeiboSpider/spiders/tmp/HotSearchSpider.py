@@ -6,7 +6,7 @@
 import time
 import json
 import scrapy
-from ..items import HotSearchItem
+from WeiboSpider.items import HotSearchItem
 from math import floor
 
 

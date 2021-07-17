@@ -6,7 +6,7 @@
 
 import json
 import scrapy
-from ..items import FansListItem, FollowsListItem
+from WeiboSpider.items import FansListItem, FollowsListItem
 
 
 class FansListSpider(scrapy.Spider):
