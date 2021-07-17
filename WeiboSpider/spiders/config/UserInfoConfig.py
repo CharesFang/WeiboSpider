@@ -18,4 +18,4 @@ class UserInfoConfig(Config):
         return self.gen_url(uid)
 
     def gen_url(self, uid: str):
-        return self.__url + self.__api['api_0'] + uid + self.__api['api_1'] + uid
+        return self.url + self.__api['api_0'] + uid + self.__api['api_1'] + uid

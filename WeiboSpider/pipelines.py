@@ -6,19 +6,18 @@
 # See: https://doc.scrapy.org/en/latest/topics/item-pipeline.html
 
 import time
-from .items import *
-from .database_tool import DBConnector
+from WeiboSpider.items import *
+from WeiboSpider.database.DBConnector import DBConnector
 from scrapy.exceptions import DropItem
 from pymongo.errors import DuplicateKeyError
 
 
-class WeibospiderPipeline(object):
-
+class WeiboSpiderPipeline(object):
     def __init__(self):
         # to check the __uid from TotalNumItem, means just need to save one item and drop others
         db_connector = DBConnector()
         self.__hash_uid_list = []
-        self.db, self.client = db_connector.create_mongo_connection()
+        self.db, self.client = db_connector.connect()
 
     def get_crawled_time(self):
         return time.strftime("Crawled time: %Y-%m-%d %H:%M:%S")
@@ -29,7 +28,11 @@ class WeibospiderPipeline(object):
     def process_item(self, item, spider):
         try:
             crawled_time = self.get_crawled_time()
-            if isinstance(item, UserPostItem):
+            if isinstance(item, UserInfoItem):
+                self.db['user'].update({'uid': item['user_info']['id']}, {'$set': item['user_info']},  upsert=True)
+                return item
+
+            elif isinstance(item, UserPostItem):
                 post_id = item['user_post']['id']
                 item['user_post']['crawled_time'] = crawled_time
                 self.db['post'].update({"id": post_id}, {'$set': item['user_post']},  upsert=True)
@@ -46,12 +49,6 @@ class WeibospiderPipeline(object):
                     uid = insert_dict['uid']
                     self.db['total_num'].update({'uid': uid}, {'$set': insert_dict},  upsert=True)
                     return item
-
-            elif isinstance(item, UserInfoItem):
-                uid = item['user_info']['id']
-                item['user_info']['crawled_time'] = crawled_time
-                self.db['user'].update({'uid': uid}, {'$set': item['user_info']},  upsert=True)
-                return item
 
             elif isinstance(item, HotSearchItem):
                 insert_dic = {'content': item['hot_search'], 'time_stamp': item['time_stamp']}

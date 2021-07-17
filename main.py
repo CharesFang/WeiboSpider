@@ -9,8 +9,7 @@ from scrapy.cmdline import execute
 
 
 if __name__ == '__main__':
-    spider_cmd = f"scrapy crawl user_info_spider -a uid=123|321"
-    print(os.path.dirname(os.path.abspath(__file__)))
+    spider_cmd = f"scrapy crawl user_info_spider -a uid=6420901191"
     sys.path.append(os.path.dirname(os.path.abspath(__file__)))
     execute(spider_cmd.split())
 
