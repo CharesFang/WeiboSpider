@@ -5,6 +5,7 @@
 
 from WeiboSpider.middlewares.RetryMiddleware import RetryMiddleware
 from WeiboSpider.middlewares.ProxyMiddleware import ProxyMiddleware
+from WeiboSpider.middlewares.InitialMiddleware import InitialMiddleware
 from WeiboSpider.middlewares.FakeUserAgentMiddleware import FakeUserAgentMiddleware
 
-__all__ = ['FakeUserAgentMiddleware', 'RetryMiddleware', 'ProxyMiddleware']
+__all__ = ['FakeUserAgentMiddleware', 'RetryMiddleware', 'ProxyMiddleware', 'InitialMiddleware']

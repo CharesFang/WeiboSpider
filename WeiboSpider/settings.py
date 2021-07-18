@@ -42,6 +42,7 @@ DEFAULT_REQUEST_HEADERS = {
 DOWNLOADER_MIDDLEWARES = {
     'scrapy.downloadermiddleware.useragent.UserAgentMiddleware': None,
     'scrapy.contrib.downloadermiddleware.httpproxy.HttpProxyMiddleware': None,
+    'WeiboSpider.middlewares.InitialMiddleware': 50,
     'WeiboSpider.middlewares.FakeUserAgentMiddleware': 100,
     'WeiboSpider.middlewares.ProxyMiddleware': None,  # 150
     'WeiboSpider.middlewares.RetryMiddleware': None  # 250
@@ -57,6 +58,9 @@ ITEM_PIPELINES = {
 # Custom Option
 # To get proxy, each proxy form like "https://xxx.xxx.xxx:xxxx/"
 proxy_url = ''
+
+# The max retry times when crawling failed
+MAX_RETRY_TIME = 3
 
 # Disable cookies (enabled by default)
 # COOKIES_ENABLED = False
