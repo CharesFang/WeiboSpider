@@ -9,71 +9,23 @@ import time
 from WeiboSpider.items import *
 from WeiboSpider.database.DBConnector import DBConnector
 from scrapy.exceptions import DropItem
-from pymongo.errors import DuplicateKeyError
 
 
-class WeiboSpiderPipeline(object):
-    def __init__(self):
-        # to check the __uid from TotalNumItem, means just need to save one item and drop others
-        db_connector = DBConnector()
-        self.__hash_uid_list = []
-        self.db, self.client = db_connector.connect()
+class UserInfoPipeline:
+    def __init__(self, db_connector):
+        self.connector = db_connector
 
-    def get_crawled_time(self):
-        return time.strftime("Crawled time: %Y-%m-%d %H:%M:%S")
+    @classmethod
+    def from_crawler(cls, crawler):
+        return cls(db_connector=DBConnector())
+
+    def open_spider(self, spider):
+        self.db, self.client = self.connector.connect()
 
     def close_spider(self, spider):
         self.client.close()
 
     def process_item(self, item, spider):
-        try:
-            crawled_time = self.get_crawled_time()
-            if isinstance(item, UserInfoItem):
-                self.db['user'].update({'uid': item['user_info']['id']}, {'$set': item['user_info']},  upsert=True)
-                return item
-
-            elif isinstance(item, UserPostItem):
-                post_id = item['user_post']['id']
-                item['user_post']['crawled_time'] = crawled_time
-                self.db['post'].update({"id": post_id}, {'$set': item['user_post']},  upsert=True)
-                return item
-
-            elif isinstance(item, TotalNumItem):
-                uid_hash = hash(item['uid'])
-                insert_dict = {'uid': item['uid'], 'total_num': item['total_num'],
-                               'crawled_time': crawled_time}  # item to dict?
-                if uid_hash in self.__hash_uid_list:
-                    raise DropItem("Repeating TotalNumItem.")
-                else:
-                    self.__hash_uid_list.append(uid_hash)
-                    uid = insert_dict['uid']
-                    self.db['total_num'].update({'uid': uid}, {'$set': insert_dict},  upsert=True)
-                    return item
-
-            elif isinstance(item, HotSearchItem):
-                insert_dic = {'content': item['hot_search'], 'time_stamp': item['time_stamp']}
-                self.db['hot_search'].update({'time_stamp': item['time_stamp']},
-                                             {'$set': insert_dic}, upsert=True)
-                return item
-
-            elif isinstance(item, FansListItem):
-                # need to filter duplicating users
-                item_dict = dict(item)
-                item_dict['crawled_time'] = self.get_crawled_time()
-                self.db['followers'].insert_one(item_dict)
-                return item
-
-            elif isinstance(item, FollowsListItem):
-                item_dict = dict(item)
-                item_dict['crawled_time'] = self.get_crawled_time()
-                self.db['follows'].insert_one(item_dict)
-                return item
-
-            elif isinstance(item, KeyWordsItem):
-                item_dict = dict(item)
-                item_dict['crawled_time'] = self.get_crawled_time()
-                self.db['key_words'].update_one({'post.id': item_dict['post']['id']}, {'$set': item_dict}, upsert=True)
-        except DuplicateKeyError:
-            raise DropItem
-
-
+        if isinstance(item, UserInfoItem):
+            self.db['user'].update({'uid': int(item['user_info']['id'])}, {'$set': item['user_info']}, upsert=True)
+            return item

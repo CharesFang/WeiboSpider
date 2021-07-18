@@ -71,7 +71,7 @@ DOWNLOADER_MIDDLEWARES = {
 # Configure item pipelines
 # See https://doc.scrapy.org/en/latest/topics/item-pipeline.html
 ITEM_PIPELINES = {
-   'WeiboSpider.pipelines.WeiboSpiderPipeline': 300,
+    'WeiboSpider.pipelines.UserInfoPipeline': 300,
 }
 
 # Enable and configure the AutoThrottle extension (disabled by default)
