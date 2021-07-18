@@ -3,7 +3,7 @@
 # @Time    : 2021/7/18 19:13
 # @Function:
 
-class CheckMiddleware(object):
+class RetryMiddleware(object):
     def __init__(self):
         pass
 
