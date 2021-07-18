@@ -16,9 +16,6 @@ NEWSPIDER_MODULE = 'WeiboSpider.spiders'
 LOG_FILE = "WeiboSpider.log"
 LOG_LEVEL = "INFO"
 
-# Crawl responsibly by identifying yourself (and your website) on the user-agent
-#USER_AGENT = 'WeiboSpider (+http://www.yourdomain.com)'
-
 # Obey robots.txt rules
 ROBOTSTXT_OBEY = False
 
@@ -40,10 +37,10 @@ DOWNLOAD_DELAY = 0
 #TELNETCONSOLE_ENABLED = False
 
 # Override the default request headers:
-#DEFAULT_REQUEST_HEADERS = {
-#   'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
-#   'Accept-Language': 'en',
-#}
+DEFAULT_REQUEST_HEADERS = {
+    'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+    'Accept-Language': 'zh',
+}
 
 # Enable or disable spider middlewares
 # See https://doc.scrapy.org/en/latest/topics/spider-middleware.html
@@ -56,9 +53,7 @@ DOWNLOAD_DELAY = 0
 DOWNLOADER_MIDDLEWARES = {
     'scrapy.downloadermiddleware.useragent.UserAgentMiddleware': None,
     'scrapy.contrib.downloadermiddleware.httpproxy.HttpProxyMiddleware': None,
-    # 'WeiboSpider.middlewares.RandomUaAndProxyIpMiddleware': 400,
     'WeiboSpider.middlewares.FakeUserAgentMiddleware': 400,
-    'WeiboSpider.middlewares.RetryMiddleware': None,
 }
 
 # Enable or disable extensions
