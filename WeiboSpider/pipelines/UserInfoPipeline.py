@@ -1,12 +1,10 @@
 # -*- coding: utf-8 -*-
+# @Author  : CharesFuns
+# @Time    : 2021/7/18 18:00
+# @Function:
 
-# Define your item pipelines here
-#
-# Don't forget to add your pipeline to the ITEM_PIPELINES setting
-# See: https://doc.scrapy.org/en/latest/topics/item-pipeline.html
-
-from WeiboSpider.items import *
-from WeiboSpider.database.DBConnector import DBConnector
+from WeiboSpider import DBConnector
+from WeiboSpider.items import UserInfoItem
 
 
 class UserInfoPipeline:
