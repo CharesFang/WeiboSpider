@@ -12,7 +12,6 @@ import json
 import logging
 from fake_useragent import UserAgent
 from scrapy.exceptions import IgnoreRequest
-from scrapy.downloadermiddlewares.useragent import UserAgentMiddleware
 
 
 class InitialMiddleware(object):
@@ -23,45 +22,6 @@ class InitialMiddleware(object):
         pass
 
     def process_request(self, request, spider):
-        pass
-
-
-class FakeUserAgentMiddleware(UserAgentMiddleware):
-    def __init__(self, ua):
-        super(UserAgentMiddleware, self).__init__()
-        self.ua = ua
-
-    @classmethod
-    def from_crawler(cls, crawler):
-        s = cls(ua=UserAgent(path=f'{os.path.dirname(__file__)}/resource/0.1.11.json'))
-        return s
-
-    def process_request(self, request, spider):
-        request.headers['User-agent'] = self.ua.random
-        return None
-
-
-class ProxyMiddleware(object):
-    def __init__(self):
-        pass
-
-    @classmethod
-    def from_crawler(cls, crawler):
-        pass
-
-    def process_request(self, request, crawler):
-        pass
-
-
-class CheckMiddleware(object):
-    def __init__(self):
-        pass
-
-    @classmethod
-    def from_crawler(cls, crawler):
-        pass
-
-    def process_response(self, response, spider):
         pass
 
 
