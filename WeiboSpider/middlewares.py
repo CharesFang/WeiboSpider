@@ -27,9 +27,9 @@ class FakeUserAgentMiddleware(UserAgentMiddleware):
 
     def process_request(self, request, spider):
         request.headers['User-agent'] = self.ua.random
+        return request
 
 
-# to solve crawling failed
 class RetryMiddleware(object):
 
     def __init__(self, ip_num, retry_time=3):
