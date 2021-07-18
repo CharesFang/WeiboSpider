@@ -57,7 +57,7 @@ ITEM_PIPELINES = {
 
 # Custom Option
 # To get proxy, each proxy form like "https://xxx.xxx.xxx:xxxx/"
-proxy_url = ''
+PROXY_URL = ''
 
 # The max retry times when crawling failed
 MAX_RETRY_TIME = 3

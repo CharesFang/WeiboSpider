@@ -18,7 +18,7 @@ class ProxyMiddleware(object):
 
     @classmethod
     def from_crawler(cls, crawler):
-        return cls(crawler.settings.proxy_url)
+        return cls(crawler.settings.get('PROXY_URL'))
 
     def get_random_proxy(self):
         resp = requests.get(self.proxy_url)
