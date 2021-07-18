@@ -6,7 +6,7 @@
 import json
 from scrapy import Spider, Request
 from WeiboSpider.items import UserInfoItem
-from ..config.UserInfoConfig import UserInfoConfig
+from WeiboSpider.spiders.config import UserInfoConfig
 
 
 class UserInfoSpider(Spider):
