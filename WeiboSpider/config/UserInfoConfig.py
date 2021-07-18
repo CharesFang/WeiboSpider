@@ -3,7 +3,7 @@
 # @Time    : 2021/7/17 1:23
 # @Function:
 
-from base.Config import Config
+from WeiboSpider.config.base import Config
 
 
 class UserInfoConfig(Config):
