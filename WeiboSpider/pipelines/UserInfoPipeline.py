@@ -3,7 +3,7 @@
 # @Time    : 2021/7/18 18:00
 # @Function:
 
-from WeiboSpider import DBConnector
+from WeiboSpider.database import DBConnector
 from WeiboSpider.items import UserInfoItem
 
 
