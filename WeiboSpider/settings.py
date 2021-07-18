@@ -58,7 +58,7 @@ DOWNLOADER_MIDDLEWARES = {
     'scrapy.downloadermiddleware.useragent.UserAgentMiddleware': None,
     'scrapy.contrib.downloadermiddleware.httpproxy.HttpProxyMiddleware': None,
     # 'WeiboSpider.middlewares.RandomUaAndProxyIpMiddleware': 400,
-    'WeiboSpider.middlewares.RandomUaAndProxyIpMiddleware': None,
+    'WeiboSpider.middlewares.FakeUserAgentMiddleware': 400,
     'WeiboSpider.middlewares.RetryMiddleware': None,
 }
 

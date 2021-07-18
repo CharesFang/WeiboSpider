@@ -5,6 +5,7 @@
 # See documentation in:
 # https://doc.scrapy.org/en/latest/topics/spider-middleware.html
 
+import os
 import re
 import time
 import json
@@ -14,29 +15,17 @@ from scrapy.exceptions import IgnoreRequest
 from scrapy.downloadermiddlewares.useragent import UserAgentMiddleware
 
 
-# to add random user-agent for every request
-# to add random proxy IP address for every request
-class RandomUaAndProxyIpMiddleware(UserAgentMiddleware):
-    def __init__(self, ua, ip_num, api):
+class FakeUserAgentMiddleware(UserAgentMiddleware):
+    def __init__(self, ua):
         super(UserAgentMiddleware, self).__init__()
         self.ua = ua
-        self.api = api
-        self.ip_num = ip_num
 
     @classmethod
     def from_crawler(cls, crawler):
-        api = crawler.settings.get('PROXY_API')  # api to get proxy ip address, usually an url
-        ip_num = int(re.findall(r'count=\d+', api)[0][6:])  # number of the proxy ip getting from url
-        s = cls(ua=UserAgent(), ip_num=ip_num, api=api)
+        s = cls(ua=UserAgent(path=f'{os.path.dirname(__file__)}/resource/0.1.11.json'))
         return s
 
-    @staticmethod
-    def get_proxy_ip(ip_num):
-        return None
-
     def process_request(self, request, spider):
-        # proxy = RandomUaAndProxyIpMiddleware.get_proxy_ip(self.ip_num)
-        # request.meta['proxy'] = proxy
         request.headers['User-agent'] = self.ua.random
 
 
