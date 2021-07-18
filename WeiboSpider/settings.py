@@ -13,7 +13,7 @@ BOT_NAME = 'WeiboSpider'
 SPIDER_MODULES = ['WeiboSpider.spiders']
 NEWSPIDER_MODULE = 'WeiboSpider.spiders'
 
-LOG_FILE = "Weibo_Spider.log"
+LOG_FILE = "WeiboSpider.log"
 LOG_LEVEL = "INFO"
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
@@ -54,7 +54,6 @@ DOWNLOAD_DELAY = 0
 # Enable or disable downloader middlewares
 # See https://doc.scrapy.org/en/latest/topics/downloader-middleware.html
 DOWNLOADER_MIDDLEWARES = {
-    # 禁用Scrapy自带的代理中间件与UA中间件，启用用户自定义的中间件
     'scrapy.downloadermiddleware.useragent.UserAgentMiddleware': None,
     'scrapy.contrib.downloadermiddleware.httpproxy.HttpProxyMiddleware': None,
     # 'WeiboSpider.middlewares.RandomUaAndProxyIpMiddleware': 400,

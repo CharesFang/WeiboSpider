@@ -15,6 +15,17 @@ from scrapy.exceptions import IgnoreRequest
 from scrapy.downloadermiddlewares.useragent import UserAgentMiddleware
 
 
+class InitialMiddleware(object):
+    def __init__(self):
+        pass
+
+    def from_crawler(self, crawler):
+        pass
+
+    def process_request(self, request, spider):
+        pass
+
+
 class FakeUserAgentMiddleware(UserAgentMiddleware):
     def __init__(self, ua):
         super(UserAgentMiddleware, self).__init__()
@@ -27,11 +38,34 @@ class FakeUserAgentMiddleware(UserAgentMiddleware):
 
     def process_request(self, request, spider):
         request.headers['User-agent'] = self.ua.random
-        return request
+        return None
+
+
+class ProxyMiddleware(object):
+    def __init__(self):
+        pass
+
+    @classmethod
+    def from_crawler(cls, crawler):
+        pass
+
+    def process_request(self, request, crawler):
+        pass
+
+
+class CheckMiddleware(object):
+    def __init__(self):
+        pass
+
+    @classmethod
+    def from_crawler(cls, crawler):
+        pass
+
+    def process_response(self, response, spider):
+        pass
 
 
 class RetryMiddleware(object):
-
     def __init__(self, ip_num, retry_time=3):
         self.retry_time = retry_time
         self.ua = UserAgent()
