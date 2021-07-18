@@ -34,6 +34,7 @@ class UserInfoSpider(Spider):
         yield self._parse_profile(response)
 
     def _parse_profile(self, response):
+        item = UserInfoItem()
         user_info = json.loads(response.text)['data']['userInfo']
         item['user_info'] = user_info
         return item
