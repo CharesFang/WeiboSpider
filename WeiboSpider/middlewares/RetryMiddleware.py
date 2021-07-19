@@ -33,29 +33,31 @@ class RetryMiddleware(object):
             Notably, if `JSONDecodeError` was triggered, it seems that there was something wrong with crawled pages. So,
             the function will resent the request.
         """
-        retry_times = request.meta['retried_times'] + 1
+        retried_times = request.meta['retried_times'] + 1
         msg_template = f"{strftime('%Y-%m-%d %H:%M:%S [RetryMiddleware]')}, {spider.name}:"
 
-        if self.max_retry_times < retry_times:
-            msg = f"{msg_template} Drop request by maximum crawling times {self.max_retry_times}, target url: {request.url}."
+        if self.max_retry_times < retried_times:
+            msg = f"{msg_template} Drop request by maximum crawling times {self.max_retry_times}, " \
+                  f"crawled times {request.meta['retried_times']}, target url: {request.url}."
             log(msg=msg, level=WARNING)
             raise IgnoreRequest
         else:
+            request.meta['retried_times'] = retried_times
             if response.status in [418, 404]:
-                msg = f"{msg_template} Return request obj due to http error code {response.status}, target url: {request.url}."
+                msg = f"{msg_template} Return request obj due to http error code {response.status}, " \
+                      f"crawled times {retried_times}, target url: {request.url}."
                 log(msg=msg, level=WARNING)
-                request.meta['retried_times'] = retry_times
                 return request
             try:
                 json_obj = loads(response.text)
                 if json_obj['ok'] == 0:
-                    request.meta['retried_times'] = retry_times
-                    msg = f"{msg_template} Crawled json string without data, crawled times {request.meta['retried_times']}, target url: {request.url}."
+                    msg = f"{msg_template} Crawled json string without data, " \
+                          f"crawled times {retried_times}, target url: {request.url}."
                     log(msg=msg, level=WARNING)
                     return request
                 else:
                     return response
             except JSONDecodeError:
-                msg = f"{msg_template} Json Decoding Error, target url: {request.url}."
+                msg = f"{msg_template} Json Decoding Error, crawled times {retried_times}, target url: {request.url}."
                 log(msg=msg, level=WARNING)
-                raise IgnoreRequest
+                return request
