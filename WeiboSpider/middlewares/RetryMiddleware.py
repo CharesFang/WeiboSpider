@@ -37,21 +37,21 @@ class RetryMiddleware(object):
         msg_template = f"{strftime('%Y-%m-%d %H:%M:%S [RetryMiddleware]')}, {spider.name}:"
 
         if self.max_retry_times < retry_times:
-            msg = f"{msg_template} Drop request by maximum crawling times, target url: {request.url}."
+            msg = f"{msg_template} Drop request by maximum crawling times {self.max_retry_times}, target url: {request.url}."
             log(msg=msg, level=WARNING)
             raise IgnoreRequest
         else:
             if response.status in [418, 404]:
                 msg = f"{msg_template} Return request obj due to http error code {response.status}, target url: {request.url}."
                 log(msg=msg, level=WARNING)
-                request.meta['retried_times'] += 1
+                request.meta['retried_times'] = retry_times
                 return request
             try:
                 json_obj = loads(response.text)
                 if json_obj['ok'] == 0:
-                    msg = f"{msg_template} Crawled json string without data, target url: {request.url}."
+                    request.meta['retried_times'] = retry_times
+                    msg = f"{msg_template} Crawled json string without data, crawled times {request.meta['retried_times']}, target url: {request.url}."
                     log(msg=msg, level=WARNING)
-                    request.meta['retried_times'] += 1
                     return request
                 else:
                     return response
