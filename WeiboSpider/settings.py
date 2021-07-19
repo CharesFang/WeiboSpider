@@ -45,14 +45,14 @@ DOWNLOADER_MIDDLEWARES = {
     'WeiboSpider.middlewares.InitialMiddleware': 50,
     'WeiboSpider.middlewares.FakeUserAgentMiddleware': 100,
     'WeiboSpider.middlewares.ProxyMiddleware': None,  # 150
-    'WeiboSpider.middlewares.RetryMiddleware': None  # 250
+    'WeiboSpider.middlewares.RetryMiddleware': 250  # 250
 }
 
 # Configure item pipelines
 # See https://doc.scrapy.org/en/latest/topics/item-pipeline.html
 ITEM_PIPELINES = {
     'WeiboSpider.pipelines.UserInfoPipeline': 100,
-    'WeiboSpider.pipelines.WeiboInfoPipeline': None  # 150
+    'WeiboSpider.pipelines.TweetInfoPipeline': None  # 150
 }
 
 # Custom Option

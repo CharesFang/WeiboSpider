@@ -21,7 +21,7 @@ class UserInfoSpider(Spider):
         """
         super(UserInfoSpider, self).__init__(*args, **kwargs)
         self.__generator = UserInfoConfig()
-        self.uid_list = uid.split('|')
+        self.uid_list = list(filter(None, uid.split('|')))
 
     def start_requests(self):
         """ Generate Request objs by target uid and target url generator """
