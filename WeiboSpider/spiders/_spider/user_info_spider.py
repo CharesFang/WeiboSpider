@@ -30,7 +30,6 @@ class UserInfoSpider(Spider):
             yield Request(url=url, dont_filter=True)
 
     def parse(self, response, **kwargs):
-        print(response.request.meta)
         yield self._parse_profile(response)
 
     def _parse_profile(self, response):
