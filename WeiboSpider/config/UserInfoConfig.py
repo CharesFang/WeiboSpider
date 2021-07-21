@@ -19,3 +19,7 @@ class UserInfoConfig(Config):
 
     def gen_url(self, uid: str):
         return self.url + self.__api['api_0'] + uid + self.__api['api_1'] + uid
+
+
+if __name__ == '__main__':
+    print(UserInfoConfig().gen_url('1157864602'))
