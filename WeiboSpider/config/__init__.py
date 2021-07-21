@@ -4,5 +4,6 @@
 # @Function:
 
 from WeiboSpider.config.UserInfoConfig import UserInfoConfig
+from WeiboSpider.config.TweetConfig import TweetConfig
 
-__all__ = ['UserInfoConfig']
+__all__ = ['UserInfoConfig', 'TweetConfig']
