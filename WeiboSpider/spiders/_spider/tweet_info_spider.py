@@ -59,7 +59,7 @@ class TweetInfoSpider(Spider):
                 url = self.__generator.gen_url(t_id=t_id)
                 longtext_req = Request(
                     url=url, dont_filter=True,
-                    callback=self._parse_longtext, meta={'uid': uid},
+                    callback=self._parse_longtext, meta={'uid': uid, 'id': t_id}
                 )
                 yield longtext_req
             yield item
