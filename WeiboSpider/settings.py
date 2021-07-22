@@ -52,7 +52,8 @@ DOWNLOADER_MIDDLEWARES = {
 # See https://doc.scrapy.org/en/latest/topics/item-pipeline.html
 ITEM_PIPELINES = {
     'WeiboSpider.pipelines.UserInfoPipeline': 100,
-    'WeiboSpider.pipelines.TweetInfoPipeline': None  # 150
+    'WeiboSpider.pipelines.TweetInfoPipeline': 150,  # 150
+    'WeiboSpider.pipelines.LongtextPipeline': 200
 }
 
 # Custom Option

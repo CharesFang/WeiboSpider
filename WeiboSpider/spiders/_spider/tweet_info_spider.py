@@ -34,14 +34,13 @@ class TweetInfoSpider(Spider):
 
     def parse(self, response, **kwargs):
         """
-            Compulsorily implement due to abstract method.
+            Compulsorily implemented due to abstract method.
         """
         pass
 
     def _parse_tweet(self, response, **kwargs):
         """
-            Parse crawled json str and tweet_spider iteratively generate new Request obj
-            吃饭去了，还有长文本的问题，长文本用单独的一个collection来存储吧。
+            Parse crawled json str and tweet_spider iteratively generate new Request obj.
         """
         weibo_info = loads(response.text)
         data = weibo_info['data']
