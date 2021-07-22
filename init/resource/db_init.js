@@ -46,6 +46,7 @@ print();
 // create target collection
 db.createCollection('user');
 db.createCollection('tweet');
+db.createCollection('longtext');
 print("Successfully create collections.");
 
 conn.close();
