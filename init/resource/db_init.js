@@ -50,4 +50,4 @@ db.createCollection('longtext');
 print("Successfully create collections.");
 
 conn.close();
-print("Mongodb initial finished.")
+print("Mongodb initial finished.");
