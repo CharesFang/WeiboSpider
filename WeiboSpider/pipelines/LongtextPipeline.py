@@ -13,5 +13,5 @@ class LongtextPipeline(Pipeline):
 
     def process_item(self, item, spider):
         if isinstance(item, LongtextItem):
-            self.db['longtext'].update_one({'id': item['id']}, {'$set': dict(item)}, upsert=True)
+            self.db['longtext'].update_one({'id': item['t_id']}, {'$set': dict(item)}, upsert=True)
         return item

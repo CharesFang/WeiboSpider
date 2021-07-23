@@ -53,12 +53,13 @@ class TweetInfoSpider(Spider):
             item = TweetItem()
             card['mblog']['uid'] = uid
             item['tweet_info'] = card['mblog']
-            if card['mblog']['isLongText']:
+            # if card['mblog']['isLongText']:
+            if True:
                 t_id = card['mblog']['id']
                 url = self.__generator.gen_url(t_id=t_id)
                 longtext_req = Request(
                     url=url, dont_filter=True,
-                    callback=self._parse_longtext, meta={'uid': uid, 'id': t_id}
+                    callback=self._parse_longtext, meta={'uid': uid, 't_id': t_id}
                 )
                 yield longtext_req
             yield item
@@ -67,6 +68,6 @@ class TweetInfoSpider(Spider):
         long_text = loads(response.text)
         item = LongtextItem()
         item['uid'] = response.meta['uid']
-        item['id'] = response.meta['id']
-        item['longtext'] = long_text['longTextContent']
+        item['t_id'] = response.meta['t_id']
+        item['longtext'] = long_text['data']['longTextContent']
         yield item
