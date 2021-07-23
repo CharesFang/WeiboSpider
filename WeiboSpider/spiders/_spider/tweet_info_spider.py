@@ -53,8 +53,7 @@ class TweetInfoSpider(Spider):
             item = TweetItem()
             card['mblog']['uid'] = uid
             item['tweet_info'] = card['mblog']
-            # if card['mblog']['isLongText']:
-            if True:
+            if card['mblog']['isLongText']:
                 t_id = card['mblog']['id']
                 url = self.__generator.gen_url(t_id=t_id)
                 longtext_req = Request(
