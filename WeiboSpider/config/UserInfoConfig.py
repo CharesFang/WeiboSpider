@@ -11,7 +11,7 @@ class UserInfoConfig(Config):
         super(UserInfoConfig, self).__init__()
         self.__api = {
             'api_0': 'api/container/getIndex?type=__uid&value=',
-            'api_1': '&containerid=10505'
+            'api_1': '&containerid=100505'
         }
 
     def __call__(self, uid):
