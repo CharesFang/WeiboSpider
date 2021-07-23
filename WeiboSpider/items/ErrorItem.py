@@ -7,4 +7,5 @@ from scrapy import Item, Field
 
 
 class ErrorItem(Item):
-    pass
+    uid = Field()
+    url = Field()
