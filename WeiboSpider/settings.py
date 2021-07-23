@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-import os
 # Scrapy settings for WeiboSpider project
 #
 # For simplicity, this file contains only settings considered important or
@@ -14,70 +13,77 @@ BOT_NAME = 'WeiboSpider'
 SPIDER_MODULES = ['WeiboSpider.spiders']
 NEWSPIDER_MODULE = 'WeiboSpider.spiders'
 
-LOG_FILE = "Weibo_Spider.log"
+LOG_FILE = "WeiboSpider.log"
 LOG_LEVEL = "INFO"
-
-# Crawl responsibly by identifying yourself (and your website) on the user-agent
-#USER_AGENT = 'WeiboSpider (+http://www.yourdomain.com)'
 
 # Obey robots.txt rules
 ROBOTSTXT_OBEY = False
-
-# Configure maximum concurrent requests performed by Scrapy (default: 16)
-CONCURRENT_REQUESTS = 32
 
 # Configure a delay for requests for the same website (default: 0)
 # See https://doc.scrapy.org/en/latest/topics/settings.html#download-delay
 # See also autothrottle settings and docs
 DOWNLOAD_DELAY = 0
+
 # The download delay setting will honor only one of:
-#CONCURRENT_REQUESTS_PER_DOMAIN = 16
-#CONCURRENT_REQUESTS_PER_IP = 16
+CONCURRENT_REQUESTS_PER_DOMAIN = 64
+CONCURRENT_REQUESTS_PER_IP = 0
 
-# Disable cookies (enabled by default)
-#COOKIES_ENABLED = False
-
-# Disable Telnet Console (enabled by default)
-#TELNETCONSOLE_ENABLED = False
+# Configure maximum concurrent requests performed by Scrapy (default: 16)
+CONCURRENT_REQUESTS = 1
 
 # Override the default request headers:
-#DEFAULT_REQUEST_HEADERS = {
-#   'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
-#   'Accept-Language': 'en',
-#}
-
-# Enable or disable spider middlewares
-# See https://doc.scrapy.org/en/latest/topics/spider-middleware.html
-#SPIDER_MIDDLEWARES = {
-#    'WeiboSpider.middlewares.WeibospiderSpiderMiddleware': 543,
-#}
+DEFAULT_REQUEST_HEADERS = {
+    'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+    'Accept-Language': 'zh',
+}
 
 # Enable or disable downloader middlewares
 # See https://doc.scrapy.org/en/latest/topics/downloader-middleware.html
 DOWNLOADER_MIDDLEWARES = {
-    # 禁用Scrapy自带的代理中间件与UA中间件，启用用户自定义的中间件
     'scrapy.downloadermiddleware.useragent.UserAgentMiddleware': None,
     'scrapy.contrib.downloadermiddleware.httpproxy.HttpProxyMiddleware': None,
-    # 'WeiboSpider.middlewares.RandomUaAndProxyIpMiddleware': 400,
-    'WeiboSpider.middlewares.RandomUaAndProxyIpMiddleware': None,
-    'WeiboSpider.middlewares.RetryMiddleware': 544,
+    'WeiboSpider.middlewares.InitialMiddleware': 50,
+    'WeiboSpider.middlewares.FakeUserAgentMiddleware': 100,
+    'WeiboSpider.middlewares.ProxyMiddleware': None,  # 150
+    'WeiboSpider.middlewares.RetryMiddleware': 250  # 250
 }
-
-# Enable or disable extensions
-# See https://doc.scrapy.org/en/latest/topics/extensions.html
-#EXTENSIONS = {
-#    'scrapy.extensions.telnet.TelnetConsole': None,
-#}
 
 # Configure item pipelines
 # See https://doc.scrapy.org/en/latest/topics/item-pipeline.html
 ITEM_PIPELINES = {
-   'WeiboSpider.pipelines.WeibospiderPipeline': 300,
+    'WeiboSpider.pipelines.UserInfoPipeline': 100,
+    'WeiboSpider.pipelines.TweetInfoPipeline': 150,  # 150
+    'WeiboSpider.pipelines.LongtextPipeline': 200
 }
+
+# Custom Option
+# To get proxy, each proxy form like "https://xxx.xxx.xxx:xxxx/"
+PROXY_URL = ''
+
+# The max retry times when crawling failed
+MAX_RETRY_TIME = 3
+
+# Disable cookies (enabled by default)
+# COOKIES_ENABLED = False
+
+# Disable Telnet Console (enabled by default)
+# TELNETCONSOLE_ENABLED = False
+
+# Enable or disable spider middlewares
+# See https://doc.scrapy.org/en/latest/topics/spider-middleware.html
+# SPIDER_MIDDLEWARES = {
+#    'WeiboSpider.middlewares.WeiboSpiderSpiderMiddleware': 543,
+# }
+
+# Enable or disable extensions
+# See https://doc.scrapy.org/en/latest/topics/extensions.html
+# EXTENSIONS = {
+#    'scrapy.extensions.telnet.TelnetConsole': None,
+# }
 
 # Enable and configure the AutoThrottle extension (disabled by default)
 # See https://doc.scrapy.org/en/latest/topics/autothrottle.html
-#AUTOTHROTTLE_ENABLED = True
+# AUTOTHROTTLE_ENABLED = True
 # The initial download delay
 #AUTOTHROTTLE_START_DELAY = 5
 # The maximum download delay to be set in case of high latencies

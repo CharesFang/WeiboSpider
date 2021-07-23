@@ -1,12 +1,43 @@
 # Tiny Weibo Spider
 
- ![](https://img.shields.io/badge/License-GPL-brightgreen) ![](https://img.shields.io/badge/Scrapy-v1.6.0-blue) ![](https://img.shields.io/badge/Python-v3.7.4-blue) ![](https://img.shields.io/badge/Spider-Weibo-orange)
+![](https://img.shields.io/badge/License-GPL-brightgreen) ![](https://img.shields.io/badge/Scrapy-v1.6.0-blue) ![](https://img.shields.io/badge/Python-v3.7.4-blue) ![](https://img.shields.io/badge/Spider-Weibo-orange)
+
+## 初步完成代码重构！
+
+通过这小半个月以来的摸鱼划水，初步完成了爬虫代码的重构，完成了基本对微博用户资料、博文的爬取，重构了代码结构（虽然某种程度上还是很ugly）
+
+总结一下现目前完成的工作和还需要进行的工作：
+
+1. 对爬虫架构进行重构，增强了可扩展性和可维护性。
+
+2. 新增`init/init.sh`MongoDB自动化部署脚本（需要docker支持）
+
+3. 完成了`user_info_spider`和`tweet_spider`，可以使用如下命令调用爬虫
+
+   `scrapy crawl user_info_spider -a uid=xxxx|xxxx`
+
+   `scrapy crawl tweet_spider -a uid=xxxx|xxxxx`
+
+4. 提供了四大下载中间件，可以根据需求自行开启或关闭。
+
+   1. `RetryMiddleware`
+   2. `FakeUserAgentMidlleware`
+   3. `InitialMiddleware`
+   4. `ProxyMidlleware`
+
+未完成的工作：
+
+1. 实现对`user_info_spider`和`tweet_spider `的封装。
+2. 对热搜、用户粉丝关注列表等信息的爬虫。
+3. 看得懂的Readme（对不起我太懒了--）
+4. 更易读的技术文档（现目前这玩意儿就没有）
 
 ## Warning!
 
 终于放假并且摆脱了老板的魔爪，并且能够捡起自己去年这个时候写下的屎山代码~~（不是）~~
 
-给自己定下了几个小目标，争取九月份之前，完成对爬虫的重构，实现代理池、中间件等模块化设计，并或许可能应该支持docker一键部署爬虫+数据库。旧的代码存储在了`v1.0`分支中，暂时还是可以使用的，新版微博爬虫在`dev`分支中进行开发，这里要特别感谢对我爬虫提出意见和改进的cyc大佬，当然由于特殊的原因我暂时无法联系他，也没办法将他加入到contributor中。
+给自己定下了几个小目标，争取九月份之前，完成对爬虫的重构，实现代理池、中间件等模块化设计，并或许可能应该支持docker一键部署爬虫+数据库。旧的代码存储在了`v1.0`分支中，暂时还是可以使用的，新版微博爬虫在`dev`
+分支中进行开发，这里要特别感谢对我爬虫提出意见和改进的cyc大佬，当然由于特殊的原因我暂时无法联系他，也没办法将他加入到contributor中。
 
 综上，开搞开搞。
 
