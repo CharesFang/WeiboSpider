@@ -4,14 +4,14 @@
 # @Function:
 
 from json import loads
-from scrapy import Spider, Request
+from scrapy import Request
+from WeiboSpider.base import BaseSpider
 from WeiboSpider.config import TweetConfig
 from WeiboSpider.items import TweetItem, LongtextItem
 
 
-class TweetInfoSpider(Spider):
+class TweetInfoSpider(BaseSpider):
     name = "tweet_spider"
-    allowed_domains = ['m.weibo.cn', 'weibo.com']
 
     def __init__(self, uid, *args, **kwargs):
         """
@@ -30,7 +30,8 @@ class TweetInfoSpider(Spider):
         """
         for uid in self.__uid_list:
             url = self.__generator.gen_url(uid=uid, page=None)
-            yield Request(url=url, dont_filter=True, callback=self._parse_tweet, meta={'uid': uid})
+            yield Request(url=url, dont_filter=True, callback=self._parse_tweet, errback=self.parse_err,
+                          meta={'uid': uid})
 
     def parse(self, response, **kwargs):
         """
@@ -48,7 +49,8 @@ class TweetInfoSpider(Spider):
         uid = response.meta['uid']
         if page:
             url = self.__generator.gen_url(uid=uid, page=page)
-            yield Request(url=url, dont_filter=True, callback=self._parse_tweet, meta={'uid': uid})
+            yield Request(url=url, dont_filter=True, callback=self._parse_tweet, errback=self.parse_err,
+                          meta={'uid': uid})
         for card in data['cards']:
             item = TweetItem()
             card['mblog']['uid'] = uid
@@ -57,7 +59,7 @@ class TweetInfoSpider(Spider):
                 t_id = card['mblog']['id']
                 url = self.__generator.gen_url(t_id=t_id)
                 longtext_req = Request(
-                    url=url, dont_filter=True,
+                    url=url, dont_filter=True, errback=self.parse_err,
                     callback=self._parse_longtext, meta={'uid': uid, 't_id': t_id}
                 )
                 yield longtext_req

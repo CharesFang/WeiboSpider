@@ -4,14 +4,14 @@
 # @Function:
 
 import json
-from scrapy import Spider, Request
+from scrapy import Request
+from WeiboSpider.base import BaseSpider
 from WeiboSpider.items import UserInfoItem
 from WeiboSpider.config import UserInfoConfig
 
 
-class UserInfoSpider(Spider):
+class UserInfoSpider(BaseSpider):
     name = "user_info_spider"
-    allowed_domains = ['m.weibo.cn', "weibo.com", "weibo.cn"]
 
     def __init__(self, uid: str, *args, **kwargs):
         """"
@@ -27,7 +27,7 @@ class UserInfoSpider(Spider):
         """ Generate Request objs by target uid and target url generator """
         for uid in self.uid_list:
             url = self.__generator(uid)
-            yield Request(url=url, dont_filter=True)
+            yield Request(url=url, dont_filter=True, errback=self.parse_err)
 
     def parse(self, response, **kwargs):
         yield self._parse_profile(response)
