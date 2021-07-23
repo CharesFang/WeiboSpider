@@ -4,6 +4,7 @@
 # @Function:
 
 from WeiboSpider.pipelines.UserInfoPipeline import UserInfoPipeline
+from WeiboSpider.pipelines.LongtextPipeline import LongtextPipeline
 from WeiboSpider.pipelines.TweetInfoPipeline import TweetInfoPipeline
 
-__all__ = ['UserInfoPipeline', 'TweetInfoPipeline']
+__all__ = ['UserInfoPipeline', 'LongtextPipeline', 'TweetInfoPipeline']

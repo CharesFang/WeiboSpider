@@ -30,7 +30,7 @@ class TweetInfoSpider(Spider):
         """
         for uid in self.__uid_list:
             url = self.__generator.gen_url(uid=uid, page=None)
-            yield Request(url=url, dont_filter=True, callback=self._parse, meta={'uid': uid})
+            yield Request(url=url, dont_filter=True, callback=self._parse_tweet, meta={'uid': uid})
 
     def parse(self, response, **kwargs):
         """
@@ -47,8 +47,8 @@ class TweetInfoSpider(Spider):
         page = data['cardlistInfo']['page']
         uid = response.meta['uid']
         if page:
-            url = self.__generator.gen_url(uid=uid)
-            yield Request(url=url, dont_filter=True)
+            url = self.__generator.gen_url(uid=uid, page=page)
+            yield Request(url=url, dont_filter=True, callback=self._parse_tweet, meta={'uid': uid})
         for card in data['cards']:
             item = TweetItem()
             card['mblog']['uid'] = uid

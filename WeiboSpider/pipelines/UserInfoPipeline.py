@@ -14,4 +14,4 @@ class UserInfoPipeline(Pipeline):
     def process_item(self, item, spider):
         if isinstance(item, UserInfoItem):
             self.db['user'].update_one({'uid': int(item['user_info']['id'])}, {'$set': item['user_info']}, upsert=True)
-            return item
+        return item

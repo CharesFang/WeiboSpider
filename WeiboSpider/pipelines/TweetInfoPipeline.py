@@ -14,3 +14,4 @@ class TweetInfoPipeline(Pipeline):
     def process_item(self, item, spider):
         if isinstance(item, TweetItem):
             self.db['tweet'].update_one({'id': item['tweet_info']['id']}, {'$set': item['tweet_info']}, upsert=True)
+        return item
