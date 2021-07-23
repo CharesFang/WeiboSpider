@@ -3,8 +3,8 @@
 # @Time    : 2021/7/22 0:51
 # @Function:
 
+from WeiboSpider.base import Pipeline
 from WeiboSpider.items import LongtextItem
-from WeiboSpider.pipelines.base import Pipeline
 
 
 class LongtextPipeline(Pipeline):

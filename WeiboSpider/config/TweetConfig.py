@@ -3,7 +3,7 @@
 # @Time    : 2021/7/19 23:45
 # @Function:
 
-from WeiboSpider.config.base import Config
+from WeiboSpider.base import Config
 
 
 class TweetConfig(Config):

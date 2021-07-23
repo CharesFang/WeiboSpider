@@ -3,8 +3,8 @@
 # @Time    : 2021/7/18 18:00
 # @Function:
 
+from WeiboSpider.base import Pipeline
 from WeiboSpider.items import UserInfoItem
-from WeiboSpider.pipelines.base import Pipeline
 
 
 class UserInfoPipeline(Pipeline):

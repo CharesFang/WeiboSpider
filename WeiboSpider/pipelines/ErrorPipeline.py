@@ -3,8 +3,8 @@
 # @Time    : 2021/7/23 15:34
 # @Function:
 
+from WeiboSpider.base import Pipeline
 from WeiboSpider.items import ErrorItem
-from WeiboSpider.pipelines.base import Pipeline
 
 
 class ErrorPipeline(Pipeline):

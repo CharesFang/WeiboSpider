@@ -9,7 +9,9 @@ from WeiboSpider.items import ErrorItem
 
 
 class BaseSpider(Spider, ABC):
-    def __init__(self, *args, **kwargs):
+    allowed_domains = ['m.weibo.cn', "weibo.com", "weibo.cn"]
+
+    def __init__(self, uid: str, *args, **kwargs):
         super(BaseSpider, self).__init__(*args, **kwargs)
 
     def parse_err(self, response):
