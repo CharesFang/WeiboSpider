@@ -4,12 +4,14 @@
 # @Function:
 
 from scrapy import Spider
+from WeiboSpider.items import ErrorItem
 
 
 class BaseSpider(Spider):
     def __init__(self, *args, **kwargs):
         super(BaseSpider, self).__init__(*args, **kwargs)
 
-    @staticmethod
     def parse_err(self, response):
-        pass
+        item = ErrorItem()
+        item['uid'] = response.meta['uid']
+        item['url'] = response.url
