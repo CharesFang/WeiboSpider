@@ -3,11 +3,12 @@
 # @Time    : 2021/7/23 15:32
 # @Function:
 
+from abc import ABC
 from scrapy import Spider
 from WeiboSpider.items import ErrorItem
 
 
-class BaseSpider(Spider):
+class BaseSpider(Spider, ABC):
     def __init__(self, *args, **kwargs):
         super(BaseSpider, self).__init__(*args, **kwargs)
 
