@@ -47,6 +47,7 @@ print();
 db.createCollection('user');
 db.createCollection('tweet');
 db.createCollection('longtext');
+db.createCollection('error_log');
 print("Successfully create collections.");
 
 conn.close();
