@@ -13,4 +13,5 @@ class ErrorPipeline(Pipeline):
 
     def process_item(self, item, spider):
         if isinstance(item, ErrorItem):
-            self.db['error_log'].update_one({'uid': item['uid']}, {'$set': dict(item)})
+            self.db['error_log'].update_one({'uid': item['uid']}, {'$set': dict(item)}, upsert=True)
+            return item

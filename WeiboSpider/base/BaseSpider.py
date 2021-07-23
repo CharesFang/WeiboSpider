@@ -16,5 +16,6 @@ class BaseSpider(Spider, ABC):
 
     def parse_err(self, response):
         item = ErrorItem()
-        item['uid'] = response.meta['uid']
-        item['url'] = response.url
+        item['uid'] = response.request.meta['uid']
+        item['url'] = response.request.url
+        yield item

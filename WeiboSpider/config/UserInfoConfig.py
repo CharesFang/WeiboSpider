@@ -11,7 +11,7 @@ class UserInfoConfig(Config):
         super(UserInfoConfig, self).__init__()
         self.__api = {
             'api_0': 'api/container/getIndex?type=__uid&value=',
-            'api_1': '&containerid=100505'
+            'api_1': '&containerid=10505'
         }
 
     def __call__(self, uid):
@@ -20,6 +20,3 @@ class UserInfoConfig(Config):
     def gen_url(self, uid: str):
         return self.url + self.__api['api_0'] + uid + self.__api['api_1'] + uid
 
-
-if __name__ == '__main__':
-    print(UserInfoConfig().gen_url('1157864602'))

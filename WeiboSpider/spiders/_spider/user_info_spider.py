@@ -27,7 +27,7 @@ class UserInfoSpider(BaseSpider):
         """ Generate Request objs by target uid and target url generator """
         for uid in self.uid_list:
             url = self.__generator(uid)
-            yield Request(url=url, dont_filter=True, errback=self.parse_err)
+            yield Request(url=url, dont_filter=True, errback=self.parse_err, meta={'uid': uid})
 
     def parse(self, response, **kwargs):
         yield self._parse_profile(response)

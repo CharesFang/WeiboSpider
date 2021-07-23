@@ -31,9 +31,3 @@ class TweetConfig(Config):
         else:
             t_id = str(kwargs['t_id'])
             return self.url + self.__api['longtext_api'] + t_id
-
-
-if __name__ == '__main__':
-    print(TweetConfig().gen_url(uid=5897762608, page=None))
-    print(TweetConfig().gen_url(uid=5897762608, page=4613861166025623))
-    print(TweetConfig().gen_url(t_id='4613861166025623'))
