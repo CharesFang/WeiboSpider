@@ -53,7 +53,8 @@ DOWNLOADER_MIDDLEWARES = {
 ITEM_PIPELINES = {
     'WeiboSpider.pipelines.UserInfoPipeline': 100,
     'WeiboSpider.pipelines.TweetInfoPipeline': 150,  # 150
-    'WeiboSpider.pipelines.LongtextPipeline': 200
+    'WeiboSpider.pipelines.LongtextPipeline': 200,
+    'WeiboSpider.pipelines.ErrorPipeline': 250
 }
 
 # Custom Option

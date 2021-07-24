@@ -3,8 +3,8 @@
 # @Time    : 2021/7/18 18:12
 # @Function:
 
+from WeiboSpider.base import Pipeline
 from WeiboSpider.items import TweetItem
-from WeiboSpider.pipelines.base import Pipeline
 
 
 class TweetInfoPipeline(Pipeline):
