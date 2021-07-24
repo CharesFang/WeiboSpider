@@ -1,185 +1,169 @@
-# Tiny Weibo Spider
+# Sina Weibo Spider
 
-![](https://img.shields.io/badge/License-GPL-brightgreen) ![](https://img.shields.io/badge/Scrapy-v1.6.0-blue) ![](https://img.shields.io/badge/Python-v3.7.4-blue) ![](https://img.shields.io/badge/Spider-Weibo-orange)
+![](https://img.shields.io/badge/License-GPL-brightgreen) ![](https://img.shields.io/badge/Scrapy-v2.4-blue) ![](https://img.shields.io/badge/Python-v3.8-orange) ![](https://img.shields.io/badge/Spider-Weibo-yellow)
 
-## 初步完成代码重构！
+## Preface
 
-通过这小半个月以来的摸鱼划水，初步完成了爬虫代码的重构，完成了基本对微博用户资料、博文的爬取，重构了代码结构（虽然某种程度上还是很ugly）
+这个微博爬虫的实现近乎贯穿了我本科学习大半的时间。前前后后经过了大约有3次颠覆级别的重构之后，现在看起来也算是稍微有了那么一点点看得过去的样子。经过小半个月的摸鱼划水，我也完成了对这个微博爬虫从架构的重构到具体实现的优化，以及设计提供自动化部署脚本等工作，使得这个爬虫比较与v1.0版本简直是高到不知道哪里去了。（膜法警告:warning:）其中，v1.0版本的代码可以在仓库分支v1.0中查看，确实是一段不堪回首的往事呀。
 
-总结一下现目前完成的工作和还需要进行的工作：
+总而言之，在不断对地对代码进行重构和优化的过程中，我也在不断地学习。前路漫长，要学的东西还有很多，如果可能的话我会长期对这个项目进行维护（前提是有空摸鱼），也会提供尽可能详细的说明文档，欢迎各位大手子提PR或者Issue，同时也求一个小小的star🌟，也算是我为诸位还在为如何从微博采集数据烦恼的研究者们做出的一点微小的贡献吧。
 
-1. 对爬虫架构进行重构，增强了可扩展性和可维护性。
+## 为什么选择M站采集数据？
 
-2. 新增`init/init.sh`MongoDB自动化部署脚本（需要docker支持）
+首先要说明最重要的一点是，本项目是基于开源爬虫框架[**Scrapy**](https://scrapy.org/)，针对新浪微博的**移动站点**，即**M站**（https://m.weibo.cn/)，实现的一个**单机**、**高并发**且**高性能**的轻量微博爬虫。
 
-3. 完成了`user_info_spider`和`tweet_spider`，可以使用如下命令调用爬虫
+解释一下什么是新浪微博的M站。随着一堆乱七八糟的技术的迅速发展（别问，问我我也不懂是啥），越来越多的国产手机APP（此处特指安卓下）都倾向于在APP中内置一个游览器内核（一般来说都是chromium，不过可能伴随一些魔改），然后通过前端开发实现APP的快速迭代。M站简单明了的说，就是用于为手机客户端的微博APP提供数据来源。（这一段中包含了我许许多多的胡说八道，如果有各种离谱的错误请尽管喷我）
 
-   `scrapy crawl user_info_spider -a uid=xxxx|xxxx`
+通常，在实现爬虫之前，开发者都需要对目标站点的反爬措施进行充分的调研，然后才下手开干。对于微博来说，现目前已知有三个不同的域名都能够使用其提供的服务。其分别是**PC站**（https://weibo.com/），M站（https://m.weibo.cn/）和一个我不知道该怎么称呼并且**十分简陋的站**（https://weibo.cn/）。所谓PC站就是使用PC端游览器访问新浪微博所看到的网站，M站即前文所述，十分简陋站我现在也不知道是干嘛的，就很尴尬。
 
-   `scrapy crawl tweet_spider -a uid=xxxx|xxxxx`
+这三个站在反爬措施的严格程度上差异较大，其中PC站的反爬措施是最严格的，而M站和十分简陋站的反爬措施设置较为宽松。这之中的缘由也简单易懂，PC站一般而言作为诸多爬虫爱好者的首选目标，自然是承受了非常多的爬虫流量，新浪微博当然也会部署最为严格的反爬措施保证他不会被乱七八糟的爬虫搞崩掉。据我不那么完全的观察，github上现存有数个在3-4年前就已经停止维护的针对PC站的微博爬虫。
 
-4. 提供了四大下载中间件，可以根据需求自行开启或关闭。
+由于PC站的反爬虫措施十分的严格，开发者需要耗费大量的经历来绕过反爬机制。这些反爬机制（某些机制不一定仅限于PC站，其它站点同样也适用）主要包含有，如：
 
-   1. `RetryMiddleware`
-   2. `FakeUserAgentMidlleware`
-   3. `InitialMiddleware`
-   4. `ProxyMidlleware`
+1. 对异常IP流量的检测。（说人话就是单个IP的HTTP请求太多了会被封掉）
+2. 对用户数据的保护。（不登陆账号就不给你看完整的用户数据）
+3. 账户登陆IP的异常检测。（同一个账号使用者的IP不能够上一秒还在美国，下一秒就到了澳大利亚）
+4. 以及形形色色、乱七八糟的验证码等等。
 
-未完成的工作：
+同时，本文也大概地总结一下许许多多的前辈他们为了绕过PC的反爬措施需要做的工作：
 
-1. 实现对`user_info_spider`和`tweet_spider `的封装。
-2. 对热搜、用户粉丝关注列表等信息的爬虫。
-3. 看得懂的Readme（对不起我太懒了--）
-4. 更易读的技术文档（现目前这玩意儿就没有）
+1. 首先是购买一批专门用来爬数据的小号，构建一个账户池。
+2. 然后仔细分析研究新浪微博的认证机制， 实现自动化的模拟登录，期间可能还会遇到验证码识别等困难，可能需要接入打码平台或者人工识别。（通过深度学习的方法自动化识别验证码又是另一个问题了）
+3. 通过伪造正常用户的登录过程，模拟登录构建，获取Cookie构建Cookie池，用这些cookie进行下一步的爬取。
+4. 购买一定数量的代理IP，为每个cookie（实际上是账户）绑定代理IP。
+5. 经过冲冲磨难最终才绕过了反爬，在爬取的过程中还要注意各cookie-IP的负载均衡，在cookie失效之后需要即使的清理。
+6. 综上所述，针对PC站爬取数据属实头铁，就算拿到数据之后还需要复杂的数据清洗，才能够得到最终的用户数据，并且采集效率极低，出错率高，很难保证在大规模的数据采集中，能够拿到完整的用户数据。
 
-## Warning!
+与之相反的是，微博的M站和十分简陋站的反爬措施就宽松很多。针对十分简陋站，有大佬已经开发了十分完整且可用性极强的爬虫（此处放上传送门[nghuyong:WeiboSpider](https://github.com/nghuyong/WeiboSpider)），能够获取千万级别甚至更高数量级的数据，可以采集到较为完整的微博用户数据。但这个爬虫有一个问题在于，即使十分简陋站的反爬较为宽松，但**仍然需要购买小号建立cookie池**之后才可以进行数据采集。当然，为了提高数据采集的速率，代理IP也是需要的。
 
-终于放假并且摆脱了老板的魔爪，并且能够捡起自己去年这个时候写下的屎山代码~~（不是）~~
+综上所述，偷鸡的我选择了微博的**M站**开发爬虫，**无需买小号构建cookie池**，甚至也不需要代理IP（当然对采集速度有很大的限制），就实现了一个轻量高效地微博爬虫。
 
-给自己定下了几个小目标，争取九月份之前，完成对爬虫的重构，实现代理池、中间件等模块化设计，并或许可能应该支持docker一键部署爬虫+数据库。旧的代码存储在了`v1.0`分支中，暂时还是可以使用的，新版微博爬虫在`dev`
-分支中进行开发，这里要特别感谢对我爬虫提出意见和改进的cyc大佬，当然由于特殊的原因我暂时无法联系他，也没办法将他加入到contributor中。
+## 设计原理
 
-综上，开搞开搞。
+简单阐述一下M站微博爬虫的设计原理。打开Firefox游览器（Chrome，Safari啥的都行），输入任意一个微博用户主页的M站网址，这里随便拿一个公众明星的账户举例。（https://m.weibo.cn/u/3669102477）通过F12开发者工具，观察微博M站数据加载的过程，结果如下图所示。重点观察红框内的两个请求，事实上微博的M站通过**AJAX**来异步加载用户数据，红框内对应的两个链接，实际为鞠婧祎这个用户的账户信息获取接口，将这个URL提取出来即为：
 
-## 以下是原版正文
+`https://m.weibo.cn/api/container/getIndex?type=uid&value=3669102477&containerid=1005053669102477`
 
-这是一个基于 **Scrapy** 框架的迷你新浪微博爬虫，无需维护Cookie或者进行模拟登录，可以实现对新浪微博的较大规模数据采集。
-
-大概是在19年的九月份，那时我还很菜（当然现在也很菜），由于项目需要被逼上马，前前后后折腾了大概一两个月，写出了这个爬虫的第一版。当然，现在回顾大约一年前自己写的代码，果然是不堪回首，难以入目，不管是从代码的简洁性、可读性还是可维护性看起来都是一坨shit。20年初参加了某个全国性的比赛，借机重构了这个爬虫，比起第一代的爬虫而言，砍掉了那些实在过于冗余的代码，调整了项目的结构，现在看起来总算是清爽很多了。
-
-言归正传，**Tiny Weibo Spider** 是我基于新浪微博的移动站点（m站）[m.weibo.cn](https://m.weibo.cn/) 和 **Scrapy** 框架构建的一个轻量微博爬虫，并将采集到的数据存储到 **MongoDB** 中包括Scrapy框架初始化时自动创建的代码，加上一对乱七八糟的注释和缩进换行，总共的代码量也只有1500行左右，其中核心代码我估计也就300行上下。核心代码量虽然不多，但是实现的功能依然较为齐全。与针对微博PC站也是就 [weibo.com](https://weibo.com/) 使用者不需要去购买小号来进行模拟登录，然后抓取Cookie，维护一个用户池，单纯的使用单个IP也可以对微博中的用户数据进行采集；如果要进行大规模的数据采集，只需要使用代理IP即可（欢迎各大代理商找我投放广告）。
-
-现目前这个微博爬虫只能部署在单个主机上运行，后面也可以开一个分支拓展成分布式的，不过最近升学压力有点大，可能要无限鸽了。据不准确估计，在有充足的代理IP的情况下，每天抓取的用户信息数量至少也是在**百万**及以上，顺带抓取了**千万条**博文，对于大部分的数据挖掘和分析工作来讲，我觉得这个采集效率是完全足够了？
-
-### 项目说明
-
-这是一个基于 **Scrapy** 框架的新浪微博爬虫，爬取的主要目标是新浪微博m站的数据，同时并使用了MongoDB对于爬取到的用户数据进行存储。
-
-#### 为什么选择M站爬取数据
-
-新浪微博的m站，即 [m.weibo.cn](https://m.weibo.cn/) ，为新浪微博的手机、平板等移动客户端提供数据。其中，绝大部分用户数据是以 **Ajax** 的形式**异步**请求加载的。由于新浪微博的PC站对于第三方爬虫部署了严格的反爬措施，包括必须要求用户登录才能够获取完整数据，暂时封禁某个请求过于频繁的IP地址等等，而新浪微博的M站的反爬措施相比PC站较少，用户不需要登录就可以获取足够完整的数据信息，因此，本项目选择新浪微博的m站进行爬取。但新浪微博m站中的用户数据分布较为零散，在获取同样完整性的数据前提下，面向m站的微博爬虫需要发起更多的网络请求，这也是限制这个爬虫爬取效率的一个原因。
-
-#### 实现原理
-
-前文中提到，新浪微博的m站以 **Ajax** 的形式异步请求用户数据，只要能够找到微博加载用户数据的URL，提取API接口，能够实现快速爬取微博用户数据。不得不说这是一种很取巧的爬取策略，新浪微博并没有针对这些 Ajax 数据请求接口进行身份认证（貌似现实中要认证也不太可行？），来自任意IP的正确请求都能够获得返回的数据，从而避免了模拟登录，用户池维护一堆麻烦的事情，某种程度上来说也算是提升了爬取效率。
-
-以下图这个用户为例，首先通过微博m站访问用户的[主页](https://m.weibo.cn/u/5653796775)，然后打开F12开发者工具，查看m站发起的Ajax请求。
+显然，`3669102477`是鞠婧祎这个账户的**UID**，而`containerid`的构造方法为`100505+uid`，由此分析得出了M站中用户账户资料的数据获取接口。
 
 <img src="img\1.png" style="zoom:50%;" />
 
-如下图所示，可以看到几个被触发的Ajax请求响应状态和信息，选择返回大小最大的包进行查看。
+打开刚刚分析得到的数据接口，获取到JSON格式的用户数据，如下图所示，可以直接存储到MongoDB等非关系型数据库中。
 
-<img src="img/2.png" style="zoom:67%;" />
+<img src="img\2.png" style="zoom:50%;" />
 
-如下图所示，可以观察到微博服务器返回了json的形式用户数据。**即针对特定用户构造特定的数据请求URL，就能够实现用户数据地有效爬取**。这一点是这个本项目爬虫构建的关键。
+同理可推，只要针对微博M站进行仔细的人工分析，就可以提取出微博用户数据请求的构造方法。并且，通过这样的数据接口获取数据不需要进行**用户认证**，也能够获取到**较为完整**的用户数据，意味着即使没有用户cookie，也能够对新浪微博进行大规模的数据采集。
 
-<img src="img/3.png" style="zoom:50%;" />
+本项目正是根据新浪微博M站这样的特点来构造微博爬虫。
 
+## 为什么使用针对M站的微博爬虫？
 
+咳咳，虽然不免有王婆卖瓜的嫌疑，但也要对本项目的核心亮点进行一下简要的阐述。
 
-#### 功能说明
+1. 轻量：本项目的核心代码大概在500行左右，由于选择了最轻松的道路，所以实现的过程十分愉快，也尽可能的保证了项目的可扩展性和易用性，加之提供了自动化部署脚本，保证在使用上能够做到轻松愉悦。
+2. 易用：本项目不需要构建额外的用户池，最多只需要使用额外的代理IP来提高采集速度，就可以实现百万级别的用户数据采集，易用性非常高。
+3. 迅速：由于爬取到的数据本身即为JSON格式，所以基本无需进行数据清洗，也大大提高了爬虫的采集速率。同时，通过M站的数据接口获取的JSON数据信息丰度极高，通过一个请求就能够获取到10条左右的博文数据。
 
-本项目现目前总共实现了四个爬虫，其主要功能如下表所示。
-
-| 爬虫名称        | 功能                                   |
-| :-------------- | :------------------------------------- |
-| WeiboSpdier     | 爬取指定用账户与博文信息               |
-| FansListSpider  | 爬取指定用户粉丝与关注列表用户信息     |
-| HotSearchSpider | 爬取现目前实时热搜                     |
-| KeyWordsSpider  | 根据用户指定的关键词爬取用户发布的博文 |
+## To Start
 
 ### 运行环境
 
-- Python >= 3.7.0
-- MongoDB >= 3.6.17
-- 操作系统 Windows/Linux
+- 操作系统：常见的Linux发行版目测都是可行的（本机开发测试环境为Ubuntu 20.04）
 
-### 项目依赖
+- Python >= 3.6.0，本机开发Python版本为3.8.10
+- MongoDB >= 4.2
+- Docker，开发环境的Docker版本为20.10.7，保持Docker版本最新即可
 
-```
-lxml==4.4.1
-fake_useragent==0.1.11
-Scrapy==1.6.0
-pymongo==3.10.1
-```
+### 初始化
 
-### 使用说明
+首先执行下列代码，将爬虫Clone到本地之后，安装相关环境依赖。
 
-#### 1.下载程序
-
-```
-git clone git@github.com:CharesFang/Tiny-Weibo-Spider.git
-cd Tiny-Weibo-Spider
+```shell
+git clone git@github.com:CharesFang/WeiboSpider.git
+cd WeiboSpider
 pip install -r requirements.txt
 ```
 
-#### 2.数据库配置
+然后为初始化脚本`./init/init.sh`赋予权限后执行，创建用于存储数据的MongoDB Docker Container.
 
-1. 创建一个MongoDB数据库，在云服务器、虚拟机或者docker里都可。
-2. 进入创建的数据库中，并创建以下集合或者根据自己的需求修改`pipelines.py`中的相关代码。（其实数据库结构还可以继续优化，不过以后再说吧hh）
-   - user：存储用户账户数据
-   - post：存储用户博文数据
-   - follows：存储用户关注者数据
-   - followers：存储用户粉丝数据
-   - hot_search：存储实时热搜数据
-   - key_words：存储根据关键词爬取到的用户博文数据
-   - total_num：存储用户发布的博文总数
-3. 在 `WeiboSpider`文件夹下有一个`database_tool.py`文件，根据自己的数据库配置完善`DBConnector`类。
+```shell
+sudo chmod 755 ./init/init.sh
+./init/init.sh
+```
 
-#### 3.代理配置
+`Init.sh`脚本会为创建MongoDB Container运行必要的配置文件，映射目录等。MongoDB Container数据存储在宿主机的目录为`"$HOME/mongo"`.
 
-1. 可以修改`settings.py`，将代理与UA中间件禁用，若如此设置，爬虫将不会为每个请求添加代理与UA。
+然后，根据`init.sh`脚本的提示，执行下列命令，调用MongoDB数据库初始化脚本`db_init.js`，分别创建`admin`管理员用户和一般数据库使用者`weibo`，以及用于存储微博数据的数据库`weibo`和`tweet, user`等集合，请妥善保存这两个用户的密码。
 
-   ```python
-   DOWNLOADER_MIDDLEWARES = {
-       # 禁用Scrapy自带的代理中间件与UA中间件，启用用户自定义的中间件
-       'scrapy.downloadermiddleware.useragent.UserAgentMiddleware': None,
-       'scrapy.contrib.downloadermiddleware.httpproxy.HttpProxyMiddleware': None,
-       # 'WeiboSpider.middlewares.RandomUaAndProxyIpMiddleware': 400,
-       'WeiboSpider.middlewares.RandomUaAndProxyIpMiddleware': None,
-       'WeiboSpider.middlewares.RetryMiddleware': 544,
-   }
-   ```
+```shell
+sudo docker exec -it weibo mongo 127.0.0.1:27017 /etc/resource/db_init.js
+```
 
-2. 启用`settings.py`中的`RandomUaAndProxyIpMiddleware`中间件，为每个请求添加代理与UA，配置信息如下：
+最后，重写`./WeiboSpider/database/DBconnector.py`文件中的`__init__`方法，将自己的密码写入`__init__`方法中，用于爬虫连接MongoDB数据库。
 
-   ```python
-   DOWNLOADER_MIDDLEWARES = {
-       # 禁用Scrapy自带的代理中间件与UA中间件，启用用户自定义的中间件
-       'scrapy.downloadermiddleware.useragent.UserAgentMiddleware': None,
-       'scrapy.contrib.downloadermiddleware.httpproxy.HttpProxyMiddleware': None,
-       'WeiboSpider.middlewares.RandomUaAndProxyIpMiddleware': 400,
-       # 'WeiboSpider.middlewares.RandomUaAndProxyIpMiddleware': None,
-       'WeiboSpider.middlewares.RetryMiddleware': 544,
-   }
-   ```
+```python
+def __init__(self):
+  self.mongo_uri = "127.0.0.1" # 一般不会改写这个参数，因为连接的是本地Docker.
+  self.mongo_database = "weibo" # init.sh中创建的`weibo`数据库.
+  self.mongo_user_name = "weibo" # init.sh中创建的`weibo`数据库用户`weibo`.
+  self.mongo_pass_wd = "Your password."
+```
 
-   然后修改`middlewares.py`中的`RandomUaAndProxyIpMiddleware`类，重写`get_proxy_ip`方法，每次返回一条代理IP信息，形如`https://xxx.xxx.xxx.xxx:xxxx`，并修改`process_request`方法为如下；
+至此，完成爬虫的初始化设置。
 
-   ```python
-   def process_request(self, request, spider):
-       proxy = RandomUaAndProxyIpMiddleware.get_proxy_ip(self.ip_num)
-       request.meta['proxy'] = proxy
-       request.headers['User-agent'] = self.ua.random
-   ```
+### 启动爬虫
 
-3. 其实这一部分代码感觉耦合程度有点高，后面再修改吧，改起来稍微繁琐了一点，但也不是不能用（滑稽）
+微博爬虫的调用方式同其他Scrapy爬虫一样，可以通过命令行或者Python脚本两种方法调用。
 
-#### 4.运行
+#### 命令行调用
 
-##### 程序运行
+本项目目前实现了三个爬虫，它们的具体功能和命令行调用方法如下表所示。
 
-1. 直接输入命令`scrapy crawl WeiboSpider -a uid=xxxxxxxx`等，输入爬虫必要运行参数，运行对应爬虫。
-2. 执行名 `python main.py`，根据提示输入对应的爬虫命令与参数，同样调用相应的爬虫
+|    Spider Name     |                      CMD                       |                           Function                           |
+| :----------------: | :--------------------------------------------: | :----------------------------------------------------------: |
+|   `weibo_spider`   |  `scrapy crawl weibo_spider -a uid=xxx|xxxx`   | 对目标微博用户的账户资料和所有博文进行采集，其中必须传入的参数`-a uid=xxx|xxx`为目标采集用户的`uid`，多个`uid`间以`|`分割。 |
+| `user_info_spider` | `scrapy crawl user_info_spdier -a uid=xxx|xxx` | 对目标微博用户的账户资料进行采集，参数传递同`weibo_spider`.  |
+|   `tweet_spider`   |   `scrapy crwal tweet_spider -a uid=xxx|xxx`   | 对目标微博用户的所有博文进行采集，参数传递同`weibo_spider`.  |
 
-##### 参数说明
+#### Python脚本调用
 
-本项目内置每个爬虫的对应参数说明如下表所示。
+Python脚本调用实质上也是通过CMD调用爬虫，可以方便爬虫的调试。调用脚本示例如下。
 
-| 爬虫名称        | 参数说明                                                     |
-| --------------- | ------------------------------------------------------------ |
-| WeiboSpdier     | uid：目标用户uid，多个uid之间以 '\|' 分隔，不能为空；page：爬取用户博文页数，默认为3 |
-| FansListSpider  | uids：目标用户uid，多个uid之间以 '\|' 分割；fans_end：粉丝列表爬取页数，默认10；follows_end：关注列表爬取页数，默认10 |
-| HotSearchSpider | 无                                                           |
-| KeyWordsSpider  | keywords：爬取关键词，不能为空；page_num，爬取页数，默认为5  |
+```python
+import os
+import sys
+from scrapy.cmdline import execute
 
+
+if __name__ == '__main__':
+    spider_cmd = "scrapy crawl weibo_spider -a uid=user0|user2"
+    execute(spider_cmd.split())
+```
+
+## Docs
+
+To be contiuned...暂时先挖一个坑...
+
+### Init
+
+### WeiboSpider
+
+#### Base
+
+#### Conofig
+
+#### Spiders
+
+#### Items
+
+#### Pipelines
+
+#### Middlewares
+
+### Database
+
+### Extension
+
+#### 我需要做什么？
+
+#### 定义你自己的爬虫
