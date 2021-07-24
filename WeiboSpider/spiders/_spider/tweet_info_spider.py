@@ -15,29 +15,23 @@ class TweetInfoSpider(BaseSpider):
 
     def __init__(self, uid, *args, **kwargs):
         """
-        :param uid: same input uid format like user_info_spider
-        :param args:
-        :param kwargs:
+            The `tweet_spider` was designed to crawl user's tweets.
+            It firstly inherits the `BaseSpider` class, and implements `_parse_tweet` and `_parse_longtext` function to
+            extract user's tweets or longtext respectively.
         """
-        super(TweetInfoSpider, self).__init__(*args, **kwargs)
-        self.__generator = TweetConfig()
-        self.__uid_list = list(filter(None, uid.split('|')))
+        super(TweetInfoSpider, self).__init__(uid, *args, **kwargs)
+        self._t_generator = TweetConfig()
 
     def start_requests(self):
         """
         generate crawling Request from designated uid.
         :return: Target Request obj.
         """
-        for uid in self.__uid_list:
-            url = self.__generator.gen_url(uid=uid, page=None)
+        uid_list = self.get_uid_list(self.uid)
+        for uid in uid_list:
+            url = self._t_generator.gen_url(uid=uid, page=None)
             yield Request(url=url, dont_filter=True, callback=self._parse_tweet, errback=self.parse_err,
                           meta={'uid': uid})
-
-    def parse(self, response, **kwargs):
-        """
-            Compulsorily implemented due to abstract method.
-        """
-        pass
 
     def _parse_tweet(self, response, **kwargs):
         """
@@ -48,7 +42,7 @@ class TweetInfoSpider(BaseSpider):
         page = data['cardlistInfo']['page']
         uid = response.meta['uid']
         if page:
-            url = self.__generator.gen_url(uid=uid, page=page)
+            url = self._t_generator.gen_url(uid=uid, page=page)
             yield Request(url=url, dont_filter=True, callback=self._parse_tweet, errback=self.parse_err,
                           meta={'uid': uid})
         for card in data['cards']:
@@ -57,7 +51,7 @@ class TweetInfoSpider(BaseSpider):
             item['tweet_info'] = card['mblog']
             if card['mblog']['isLongText']:
                 t_id = card['mblog']['id']
-                url = self.__generator.gen_url(t_id=t_id)
+                url = self._t_generator.gen_url(t_id=t_id)
                 longtext_req = Request(
                     url=url, dont_filter=True, errback=self.parse_err,
                     callback=self._parse_longtext, meta={'uid': uid, 't_id': t_id}
@@ -72,3 +66,10 @@ class TweetInfoSpider(BaseSpider):
         item['t_id'] = response.meta['t_id']
         item['longtext'] = long_text['data']['longTextContent']
         yield item
+
+    def parse(self, response, **kwargs):
+        """
+            Compulsorily implemented due to abstract method.
+        """
+
+    pass
