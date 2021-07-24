@@ -28,7 +28,8 @@ class WeiboSpider(UserInfoSpider, TweetInfoSpider):
             )
             t_url = self._t_generator.gen_url(uid=uid, page=None)
             yield Request(
-                url=t_url, dont_filter=True, meta={'uid': uid}, callback=self._parse_tweet, errback=self.parse_err
+                url=t_url, dont_filter=True, meta={'uid': uid, 'last_page': 0},
+                callback=self._parse_tweet, errback=self.parse_err
             )
 
     def parse(self, response, **kwargs):

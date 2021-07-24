@@ -31,20 +31,24 @@ class TweetInfoSpider(BaseSpider):
         for uid in uid_list:
             url = self._t_generator.gen_url(uid=uid, page=None)
             yield Request(url=url, dont_filter=True, callback=self._parse_tweet, errback=self.parse_err,
-                          meta={'uid': uid})
+                          meta={'uid': uid, 'last_page': 0})
 
     def _parse_tweet(self, response, **kwargs):
         """
             Parse crawled json str and tweet_spider iteratively generate new Request obj.
         """
+
         weibo_info = loads(response.text)
         data = weibo_info['data']
         page = data['cardlistInfo']['page']
         uid = response.meta['uid']
-        if page:
+        last_page = response.meta['last_page']
+
+        if page is not None and int(page) != last_page:
             url = self._t_generator.gen_url(uid=uid, page=page)
             yield Request(url=url, dont_filter=True, callback=self._parse_tweet, errback=self.parse_err,
-                          meta={'uid': uid})
+                          meta={'uid': uid, 'last_page': int(page)})
+
         for card in data['cards']:
             item = TweetItem()
             card['mblog']['uid'] = uid
@@ -71,5 +75,4 @@ class TweetInfoSpider(BaseSpider):
         """
             Compulsorily implemented due to abstract method.
         """
-
-    pass
+        pass
