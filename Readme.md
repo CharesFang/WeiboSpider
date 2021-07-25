@@ -121,9 +121,11 @@ def __init__(self):
 
 |    Spider Name     |                      CMD                       |                           Function                           |
 | :----------------: | :--------------------------------------------: | :----------------------------------------------------------: |
-|   `weibo_spider`   |  `scrapy crawl weibo_spider -a uid=xxx|xxxx`   | 对目标微博用户的账户资料和所有博文进行采集，其中必须传入的参数`-a uid=xxx|xxx`为目标采集用户的`uid`，多个`uid`间以`|`分割。 |
-| `user_info_spider` | `scrapy crawl user_info_spdier -a uid=xxx|xxx` | 对目标微博用户的账户资料进行采集，参数传递同`weibo_spider`.  |
-|   `tweet_spider`   |   `scrapy crwal tweet_spider -a uid=xxx|xxx`   | 对目标微博用户的所有博文进行采集，参数传递同`weibo_spider`.  |
+|   `weibo_spider`   |  scrapy crawl weibo_spider -a uid=xxx&verbar;xxx   | 对目标微博用户的账户资料和所有博文进行采集，其中必须传入的参数"-a uid=xxx&verbar;xxx"为目标采集用户的`uid`，多个`uid`间以 &verbar; 分割。 |
+| `user_info_spider` | scrapy crawl user_info_spdier -a uid=xxx&verbar;xxx | 对目标微博用户的账户资料进行采集，参数传递同`weibo_spider`.  |
+|   `tweet_spider`   |   scrapy crwal tweet_spider -a uid=xxx&verbar;xxx   | 对目标微博用户的所有博文进行采集，参数传递同`weibo_spider`.  |
+
+Markdown对于某些特殊字符的渲染不是特别到位，导致先前上述表格的显示不完整，现已经修复。
 
 #### Python脚本调用
 
