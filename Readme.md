@@ -129,7 +129,7 @@ Markdown对于某些特殊字符的渲染不是特别到位，导致先前上述
 
 #### Python脚本调用
 
-Python脚本调用实质上也是通过CMD调用爬虫，可以方便爬虫的调试。调用脚本示例如下。
+Python脚本调用实质上也是通过CMD调用爬虫，可以方便爬虫的调试。在爬虫的**根目录下**（与`scrapy.cfg`文件处于同一目录下）新建.py文件，并写入如下代码即可通过脚本调用爬虫。
 
 ```python
 from scrapy.cmdline import execute
