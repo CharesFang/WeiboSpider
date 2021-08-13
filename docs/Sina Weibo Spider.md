@@ -1,5 +1,4 @@
 # Sina Weibo Spider
-
 本项目是基于开源爬虫框架Scrapy进行开发的，因此在对本项目的配置文件等进行修改时，请仔细阅读[Scrapy](https://docs.scrapy.org/en/2.4/ )官方文档，避免出现奇奇怪怪的错误。
 
 本项目的代码组织结构如下所示。其中`scrapy.cfg`是Scrapy爬虫的配置文件，由Scrapy自动生成，一般情况下不对其进行修改；`init`目下包含了创建爬虫运行环境的初始化脚本`init.sh`以及相关资源文件等；而`WeiboSpider`目录下是爬虫的实现代码。
@@ -41,12 +40,16 @@
 
 最后，`db_init.js`脚本会创建`user`、`tweet`等集合，每个集合存储的具体用户数据类型如下表所示。
 
+<div style="text-align: center;">
+
 | Collection  | 数据类型      |
 | ----------- | ------------- |
 | `user`      | 用户账户资料  |
 | `tweet`     | 用户博文      |
 | `longtext`  | 用户长文本    |
 | `error_log` | 爬取失败的URL |
+
+</div>
 
 ### WeiboSpider
 
@@ -75,7 +78,7 @@
 
 同时，`BaseSpider`还实现了`get_uid_list`方法，对用户输入的`uid`字符串分割、转换并以`list`存储uid。
 
-最后，`BaseSpider`同样实现了`parse_err`方法，该方法会在`IgnoreRequest`（关于`IgnoreRequest`详见Scrapy文档[IgnoreRequest](https://docs.scrapy.org/en/2.4/topics/exceptions.html?highlight=ignoreRequest#ignorerequest)） 被Scrapy捕获时执行，然后生成保存爬取失败的`Request`对象相关信息的`ErrorItem`，最终存储到MongoDB数据库的`error_log`集合中。
+最后，`BaseSpider`同样实现了`parse_err`方法，该方法会在`IgnoreRequest`错误（关于`IgnoreRequest`详见Scrapy文档[IgnoreRequest](https://docs.scrapy.org/en/2.4/topics/exceptions.html?highlight=ignoreRequest#ignorerequest)） 被Scrapy捕获时执行，然后生成保存爬取失败的`Request`对象相关信息的`ErrorItem`，传递至对应管道之后，最终存储到MongoDB数据库的`error_log`集合中。
 
 ##### Config
 
@@ -95,7 +98,11 @@
 
 <span id="Config"></span>
 
-`Config`目录下主要包含了
+`Config`目录下包含了继承`Config`抽象类的`TweetConfig`与`UserInfoConfig`两个子类。
+
+`UserInfoConfig`存储了微博用户账户资料API接口的相关参数，并通过`gen_url`方法，结合目标用户`uid`，实现目标用户账户资料数据获取URL的构造。用户可以通过`UserInfoConfig()['uid']`或者`UserInfoConfig().gen_url(uid)`两种方法构造目标URL。
+
+而`TweetConfig`存储了微博用户推文信息
 
 #### Spiders
 
