@@ -50,21 +50,50 @@
 
 ### WeiboSpider
 
-`WeiboSpider`包含了微博爬虫的数据采集、清洗和存储等功能的实现以及爬虫相关配置文件等。
+`WeiboSpider`包含了微博爬虫的数据采集、清洗和存储等功能的实现以及爬虫相关配置文件等，其结构如下所示。
+
+```
+├── __init__.py
+├── base
+├── config
+├── database
+├── items
+├── middlewares
+├── pipelines
+├── resource
+├── settings.py
+└── spiders
+```
 
 #### Base
 
-`Base`目录下定义了微博爬虫的三个基类，分别为`BaseSpider`、`Config`和`Pipeline`.
+`Base`目录下定义了WeiboSpider的三个抽象类，分别为`BaseSpider`、`Config`和`Pipeline`，为爬虫的扩展和实现进行了规范。
 
-#### BaseSpider
+##### BaseSpider
 
-`BaseSpider`是一个抽象类，其继承了`	scrapy.Spider`并接收用户输入的`uid`参数，同时实现了`get_uid_list`方法对用户输入的`uid`字符串分割、转换得到以`list`形式存储的用户uid。同时，`BaseSpider`还实现了`parse_err`方法，该方法会在执行`rasie IgnoreRequest` 被Scrapy框架调用并执行，生成保存爬取失败的`Request`对象相关信息的`ErrorItem`，关于Scrapy框架中的`IgnoreRequest error`见Scrapy文档[IgnoreRequest](https://docs.scrapy.org/en/2.4/topics/exceptions.html?highlight=ignoreRequest#ignorerequest).
+`BaseSpider`是一个抽象类，其继承了`	scrapy.Spider`，并要求用户在调用任意爬虫时，必须传入`uid`参数以指定目标爬取对象，其中`uid`参数是指以`|`符号为分割的新浪微博用户uid字符串，其形如`123456|654321`。
 
-#### Config
+同时，`BaseSpider`还实现了`get_uid_list`方法，对用户输入的`uid`字符串分割、转换并以`list`存储uid。
 
-#### Pipeline
+最后，`BaseSpider`同样实现了`parse_err`方法，该方法会在`IgnoreRequest`（关于`IgnoreRequest`详见Scrapy文档[IgnoreRequest](https://docs.scrapy.org/en/2.4/topics/exceptions.html?highlight=ignoreRequest#ignorerequest)） 被Scrapy捕获时执行，然后生成保存爬取失败的`Request`对象相关信息的`ErrorItem`，最终存储到MongoDB数据库的`error_log`集合中。
+
+##### Config
+
+`Config`也是一个抽象类，定义了`gen_url`抽象方法，用于根据不同类型的爬取目标和目标用户生成目标URL，获取微博用户数据。
+
+继承`Config`的子类通常会根据不同类型的微博数据，写入数据获取API，并实现`gen_url`，返回目标URL。其子类的具体实现，见后文[Config](#config)章节。
+
+##### Pipeline
+
+`Pipeline`同样也是一个抽象类，用于规范爬虫中存储数据的各类管道的实现。`Pipeline`在被实例化时，能够通过`DBConnector`类创建MongoDB数据库连接。
+
+`Pipeline`首先实现了`open_spider`与`close_spider`两个方法，分别用于创建和关闭MongoDB数据库连接。这两个方法会在爬虫被开启或关闭时分别被调用。（*"This method is called when the spider is opened/closed"*）关于上述两个方法详见Scrapy文档 [Item Pipeline]("https://docs.scrapy.org/en/2.4/topics/item-pipeline.html").
+
+`Pipeline`还定义了一个名为`process_item`的抽象方法，所有继承的`Pipeline`的子类都必须实现该方法以实现对不同类型的爬取对象的处理。
 
 #### Conofig
+
+<span id="Config"></span>
 
 #### Spiders
 
@@ -74,7 +103,7 @@
 
 #### Middlewares
 
-### Database
+#### Database
 
 ### Extension
 

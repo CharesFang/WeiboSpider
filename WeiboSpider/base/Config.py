@@ -11,5 +11,5 @@ class Config(ABC):
         self.url = "https://m.weibo.cn/"
 
     @abstractmethod
-    def gen_url(self, *args, **kwargs):
+    def gen_url(self, *args, **kwargs) -> str:
         pass
