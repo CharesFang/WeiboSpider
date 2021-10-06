@@ -1,5 +1,5 @@
 fake_useragent==0.1.11
 requests==2.26.0
 pymongo==3.11.4
-Scrapy==2.4.1
+Scrapy==2.5.1
 lxml==4.6.3
